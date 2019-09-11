@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
       case Constants.signUpScreen:
         return new MaterialPageRoute(builder: (context) => SignUpPage());
       case Constants.detailCar:
-        return new MaterialPageRoute(builder: (context) => DetailCar());
+        return new MaterialPageRoute(builder: (context) => DetailCar(vehicle: settings.arguments,));
         break;
       default:
         return null;

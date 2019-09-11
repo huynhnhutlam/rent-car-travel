@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
+import 'package:rent_car_travel/src/screen/detail/detailCar.dart';
 
 class PopularVehicle extends StatefulWidget {
   @override
@@ -61,21 +63,22 @@ class _PopularVehicleState extends State<PopularVehicle> {
                 future: _getVehicle(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.data == null) {
-                    return new CircularProgressIndicator();
+                    return new RefreshIndicator(
+                        onRefresh: () async {}, child: Text("Loading..."));
                   } else
                     return new ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        return SinglePopularRoute(
-                          nameCar: snapshot.data[index].nameCar,
-                          imageCar: snapshot.data[index].imageCar,
-                          mode: snapshot.data[index].mode,
-                          numberOfSeats: snapshot.data[index].numberOfSeats,
-                          licensePlates: snapshot.data[index].licensePlates,
-                          status: snapshot.data[index].status,
-                        );
+                        return _singlePopularVehicle(context, snapshot, index
+                            // nameCar: snapshot.data[index].nameCar,
+                            // imageCar: snapshot.data[index].imageCar,
+                            // mode: snapshot.data[index].mode,
+                            // numberOfSeats: snapshot.data[index].numberOfSeats,
+                            // licensePlates: snapshot.data[index].licensePlates,
+                            // status: snapshot.data[index].status,
+                            );
                       },
                     );
                 }),
@@ -86,6 +89,98 @@ class _PopularVehicleState extends State<PopularVehicle> {
   }
 }
 
+Widget _singlePopularVehicle(
+    BuildContext context, AsyncSnapshot snapshot, int index) {
+  var data = snapshot.data[index];
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(5.0),
+      boxShadow: [
+        BoxShadow(
+            blurRadius: 4,
+            spreadRadius: 0,
+            color: Colors.grey,
+            offset: Offset(0, 1))
+      ],
+    ),
+    margin: EdgeInsets.only(
+      top: 10,
+      left: 12,
+      bottom: 10,
+      right: 12,
+    ),
+    width: MediaQuery.of(context).size.width - 30,
+    child: InkWell(
+      onTap: () {
+        print("data::" + data.nameCar);
+        Navigator.pushNamed(context, Constants.detailCar, arguments: data);
+      },
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: new BorderRadius.circular(5.0),
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 150.0,
+                  decoration: new BoxDecoration(
+                      image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: new NetworkImage(data.imageCar),
+                  ))),
+            ),
+            Expanded(
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  margin: EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(data.nameCar,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green)),
+                            Text(
+                              data.status,
+                              style: TextStyle(color: Colors.greenAccent),
+                            )
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.all(2),
+                              margin: EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: Colors.grey[350].withOpacity(0.5)),
+                              child: Text(data.mode)),
+                          Container(
+                              padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: Colors.grey[350].withOpacity(0.5)),
+                              child: Text('${data.numberOfSeats}' + " chỗ"))
+                        ],
+                      )
+                    ],
+                  )),
+            )
+          ]),
+    ),
+  );
+}
+/*
 class SinglePopularRoute extends StatefulWidget {
   final String nameCar;
   final String imageCar;
@@ -114,7 +209,7 @@ class _SinglePopularRouteState extends State<SinglePopularRoute> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(2.0),
+        borderRadius: BorderRadius.circular(5.0),
         boxShadow: [
           BoxShadow(
               blurRadius: 4,
@@ -123,18 +218,22 @@ class _SinglePopularRouteState extends State<SinglePopularRoute> {
               offset: Offset(0, 1))
         ],
       ),
-      margin: EdgeInsets.only(top: 10, left: 12, bottom: 10, right: 12,),
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+      margin: EdgeInsets.only(
+        top: 10,
+        left: 12,
+        bottom: 10,
+        right: 12,
+      ),
       width: MediaQuery.of(context).size.width - 30,
       child: InkWell(
-        onTap: () {},
+        onTap: () {  Navigator.pushNamed(context, Constants.detailCar, arguments: widget.nameCar);},
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               ClipRRect(
                 borderRadius: new BorderRadius.circular(5.0),
                 child: Container(
-                    width: 200.0,
+                    width: MediaQuery.of(context).size.width,
                     height: 150.0,
                     decoration: new BoxDecoration(
                         image: new DecorationImage(
@@ -144,27 +243,46 @@ class _SinglePopularRouteState extends State<SinglePopularRoute> {
               ),
               Expanded(
                 child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     margin: EdgeInsets.only(top: 10),
                     child: Column(
                       children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(widget.nameCar,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green)),
-                            Text(widget.status, style: TextStyle(color: Colors.greenAccent),)
-                          ],
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(widget.nameCar,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green)),
+                              Text(
+                                widget.status,
+                                style: TextStyle(color: Colors.greenAccent),
+                              )
+                            ],
+                          ),
                         ),
                         Row(
                           children: <Widget>[
-                            Text(widget.mode),
-                            Text('${widget.numberOfSeats}'+ "chỗ")
+                            Container(
+                                padding: EdgeInsets.all(2),
+                                margin: EdgeInsets.only(right: 5),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.grey[350].withOpacity(0.5)),
+                                child: Text(widget.mode)),
+                            Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.grey[350].withOpacity(0.5)),
+                                child:
+                                    Text('${widget.numberOfSeats}' + " chỗ"))
                           ],
                         )
                       ],
@@ -174,4 +292,4 @@ class _SinglePopularRouteState extends State<SinglePopularRoute> {
       ),
     );
   }
-}
+}*/
