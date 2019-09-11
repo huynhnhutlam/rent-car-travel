@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
@@ -14,7 +15,7 @@ class _SignUpPageState extends State<SignUpPage> {
       children: <Widget>[
         Container(
           child: new Image.asset(
-            'lib/res/images/bg.jpg',
+            'lib/res/images/splash.png',
             fit: BoxFit.fitHeight,
             height: MediaQuery.of(context).size.height,
           ),
@@ -103,10 +104,25 @@ Widget _signUp(BuildContext context) {
             child: Text('Sign Up'),
           ),
         ),
-        InkWell(
-          onTap: (){Navigator.pushNamed(context, Constants.signInScreen);},
-          child: Text('Already Account. Sign In -->'),
-        )
+       Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    child: RichText(
+                      text: TextSpan(
+                          text: "Already Account ?? ",
+                          style:
+                              TextStyle(color: Color(0xff606470), fontSize: 16),
+                          children: <TextSpan>[
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(context, Constants.signInScreen);
+                                  },
+                                text: "Sign in now.",
+                                style: TextStyle(
+                                    color: Color(0xffffffff), fontSize: 16))
+                          ]),
+                    ),
+                  ),
       ],
     ),
   );
