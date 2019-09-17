@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rent_car_travel/src/bloc/home_bloc.dart';
 import 'package:rent_car_travel/src/bloc/splash_bloc.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
-import 'package:rent_car_travel/src/screen/detail/detailCar.dart';
+import 'package:rent_car_travel/src/screen/detail/detailCar/detailCar_home_page.dart';
 import 'package:rent_car_travel/src/screen/home/home_page.dart';
 import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
 import 'package:rent_car_travel/src/screen/sign_up/sign_up.dart';

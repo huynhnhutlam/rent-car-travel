@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/screen/widget/title_home.dart';
 
 class NewestCar extends StatefulWidget {
   @override
@@ -44,19 +45,12 @@ class _NewestCarState extends State<NewestCar> {
     return Container(
       child: Column(
         children: <Widget>[
+          TitleHome(
+            text: 'This Newest',
+            onTap: (){},
+          ),
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  new Text('This Newest'),
-                  InkWell(
-                    onTap: () {},
-                    child: Text('See more >'),
-                  )
-                ],
-              )),
-          Container(
+            margin: EdgeInsets.only(top: 10),
               child: Column(
             children: <Widget>[
               new Image.network(listNewCar[1]['image']),
