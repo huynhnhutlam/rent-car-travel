@@ -3,6 +3,7 @@ import 'package:rent_car_travel/src/screen/home/banner.dart';
 import 'package:rent_car_travel/src/screen/home/newest_vehicle.dart';
 import 'package:rent_car_travel/src/screen/home/popular_route.dart';
 import 'package:rent_car_travel/src/screen/home/popular_vehicle.dart';
+import 'package:rent_car_travel/src/screen/home/service_recommend.dart';
 import 'package:rent_car_travel/src/screen/side_menu/side_menu.dart';
 import 'package:rent_car_travel/src/screen/widget/bottomBar.dart';
 import 'package:rent_car_travel/src/utils/translations.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 //NewestCar
                 NewestCar(),
+                ServiceRecommend(),
                 //Popular Vehicle
                 Container(
                   height: 30,
@@ -44,8 +46,10 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   height: 30,
                 ),
-                //Popular Routr
+                //Popular Route
                 PopularRoute(),
+                //Select Service
+
               ],
             ),
           ),

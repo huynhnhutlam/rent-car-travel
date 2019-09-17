@@ -4,7 +4,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
-import 'package:rent_car_travel/src/screen/detail/detailCar.dart';
+import 'package:rent_car_travel/src/screen/detail/detailCar/detailCar_home_page.dart';
+import 'package:rent_car_travel/src/screen/widget/title_home.dart';
 
 class PopularVehicle extends StatefulWidget {
   @override
@@ -16,9 +17,9 @@ class _PopularVehicleState extends State<PopularVehicle> {
     var data = await http
         .get("http://www.json-generator.com/api/json/get/cetfLCHWMi?indent=2");
     var jsonData = json.decode(data.body) as List;
-    List<Vehicle> routes = new List<Vehicle>();
+    List<Vehicle> vehicles = new List<Vehicle>();
     for (var obj in jsonData) {
-      Vehicle route = Vehicle(
+      Vehicle vehicle = Vehicle(
           id: obj["id"],
           nameCar: obj["nameCar"],
           imageCar: obj["imageCar"],
@@ -27,10 +28,10 @@ class _PopularVehicleState extends State<PopularVehicle> {
           numberOfSeats: obj["numberOfSeats"],
           licensePlates: obj["licensePlates"],
           status: obj["status"]);
-      routes.add(route);
+      vehicles.add(vehicle);
     }
 
-    return routes;
+    return vehicles;
   }
 
   @override
@@ -38,24 +39,9 @@ class _PopularVehicleState extends State<PopularVehicle> {
     return Container(
       child: Column(
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(left: 12, right: 12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text(
-                  'Popular Car',
-                  style: TextStyle(color: Colors.cyan[300]),
-                ),
-                new InkWell(
-                  child: Text('See more',
-                      style: TextStyle(
-                          color: Colors.cyan[300],
-                          fontStyle: FontStyle.italic)),
-                ),
-              ],
-            ),
+          TitleHome(
+            onTap: (){},
+            text: 'Popular Vehicle',
           ),
           new Container(
             height: 250,
@@ -69,7 +55,7 @@ class _PopularVehicleState extends State<PopularVehicle> {
                     return new ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data.length,
+                      itemCount: 4,
                       itemBuilder: (context, index) {
                         return _singlePopularVehicle(context, snapshot, index
                             // nameCar: snapshot.data[index].nameCar,

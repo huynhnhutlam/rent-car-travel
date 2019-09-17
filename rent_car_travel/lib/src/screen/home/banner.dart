@@ -12,7 +12,7 @@ class BannerHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(18),
+      padding: EdgeInsets.all(12),
       margin: EdgeInsets.only(top: 20, bottom: 10),
       height: 200,
       child: CarouselBuild(
