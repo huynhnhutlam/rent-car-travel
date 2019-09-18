@@ -6,4 +6,5 @@ class Constants {
   static const String signInScreen = '/sign_in_screen';
   static const String signUpScreen = '/sign_in_screen_home';
   static const String detailCar = '/detailCar';
+  static const String booking = '/booking';
 }
