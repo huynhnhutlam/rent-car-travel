@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -77,47 +78,52 @@ Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
   var data = snapshot.data[index];
   final styleTitle = TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16);
   final styleDescription = TextStyle(color: Colors.grey[600], fontSize: 14);
-  return Container(
-    height: 80,
-    margin: EdgeInsets.only(
-      top: 10,
-      left: 12,
-      bottom: 10,
-      right: 12,
-    ),
-    padding: EdgeInsets.all(10),
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 4)]),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 5),
-                    child: Text(data.nameService, style: styleTitle,)),
-                Container(
-                    child: Text(
-                        '''${data.description}''', style: styleDescription,))
-              ],
+  return GestureDetector(
+    onTap: (){
+      Navigator.pushNamed(context, Constants.booking);
+    },
+      child: Container(
+      height: 80,
+      margin: EdgeInsets.only(
+        top: 10,
+        left: 12,
+        bottom: 10,
+        right: 12,
+      ),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white,
+          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 4)]),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                      child: Text(data.nameService, style: styleTitle,)),
+                  Container(
+                      child: Text(
+                          '''${data.description}''', style: styleDescription,))
+                ],
+              ),
             ),
           ),
-        ),
-        Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            image: DecorationImage(
-                image: NetworkImage(data.image))
-          ),
-        )
-      ],
+          Container(
+            height: 70,
+            width: 70,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              image: DecorationImage(
+                  image: NetworkImage(data.image))
+            ),
+          )
+        ],
+      ),
     ),
   );
 }

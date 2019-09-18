@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rent_car_travel/src/bloc/home_bloc.dart';
 import 'package:rent_car_travel/src/bloc/splash_bloc.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
+import 'package:rent_car_travel/src/screen/booking/booking_page.dart';
 import 'package:rent_car_travel/src/screen/detail/detailCar/detailCar_home_page.dart';
 import 'package:rent_car_travel/src/screen/home/home_page.dart';
 import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
@@ -72,6 +73,8 @@ class _MyAppState extends State<MyApp> {
         return new MaterialPageRoute(builder: (context) => SignUpPage());
       case Constants.detailCar:
         return new MaterialPageRoute(builder: (context) => DetailCar(vehicle: settings.arguments,));
+      case Constants.booking:
+        return new MaterialPageRoute(builder: (context) => BookingPage());
         break;
       default:
         return null;
