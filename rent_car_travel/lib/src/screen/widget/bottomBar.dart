@@ -13,6 +13,7 @@ class _BottomBarState extends State<BottomBar> {
     NavigationItem(Icon(Icons.person_outline), Text('Profile')),
     NavigationItem(Icon(Icons.settings), Text('Setting')),
   ];
+
   Widget _buildItem(NavigationItem item, bool isSelected) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 280),

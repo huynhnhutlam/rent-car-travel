@@ -19,7 +19,7 @@ class _SelectRouteState extends State<SelectRoute> {
             text: 'Recommend Route',
           ),
           SizedBox(height: 4,),
-          
+
         ],
       ),
     );
@@ -44,7 +44,7 @@ Widget _diemDen(BuildContext context) {
                   children: <Widget>[
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 12),
-                        child: Icon(Icons.location_on)),
+                        child: Icon(Icons.location_on, size: 18,)),
                     Text('Điểm đón'),
                   ],
                 ),
@@ -84,8 +84,8 @@ Widget _selectRoute(BuildContext context) {
                   children: <Widget>[
                     Container(
                         margin: EdgeInsets.symmetric(horizontal: 12),
-                        child: Icon(Icons.my_location)),
-                    Text('Route'),
+                        child: Icon(Icons.my_location, size: 18, color: Colors.blue,)),
+                    Text('Route', style: TextStyle( color: Colors.blue),),
                   ],
                 ),
               ),
