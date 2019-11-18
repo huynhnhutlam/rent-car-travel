@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rent_car_travel/src/constants/contants.dart';
+import 'package:provider/provider.dart';
+import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/screen/booking/selected_car/select_car.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date.dart';
 
 class SelectDatePage extends StatefulWidget {
@@ -10,12 +12,16 @@ class SelectDatePage extends StatefulWidget {
 class _SelectDatePageState extends State<SelectDatePage> {
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Select Date'),
       ),
       body: Container(
-        child: SelectedDate(),
+        child: SelectedDate(
+          pickupPoint: appState.locationController.text,
+          dropPoint: appState.destinationController.text,
+        ),
       ),
       bottomNavigationBar: Container(
         height: 56,
@@ -23,9 +29,13 @@ class _SelectDatePageState extends State<SelectDatePage> {
         child: RaisedButton(
           color: Colors.blueAccent,
           onPressed: () {
-//            Navigator.pushNamed(context, Constants.select_date);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (builder) => SelectCar()));
           },
-          child: Text('Next', style: TextStyle(color: Colors.white),),
+          child: Text(
+            'Next',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );

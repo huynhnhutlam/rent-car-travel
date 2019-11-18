@@ -15,7 +15,6 @@ class _SignInPageState extends State<SignInPage> {
   final loginModel = LoginModel();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _usernameController.addListener(() {
       loginModel.usernameSink.add(_usernameController.text);
@@ -27,7 +26,6 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     loginModel.dispose();
   }

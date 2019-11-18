@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/screen/side_menu/tabbarSideMenu.dart';
 
 class SideMenu extends StatefulWidget {
@@ -12,8 +13,8 @@ class _SideMenuState extends State<SideMenu> {
     return SafeArea(
       child: Container(
           child: ListView(
-            children: <Widget>[TabbarSideMenu(), MenuItem()],
-          )),
+        children: <Widget>[TabbarSideMenu(), MenuItem()],
+      )),
     );
   }
 }
@@ -33,22 +34,44 @@ class _MenuItemState extends State<MenuItem> {
           ListTile(
             leading: Icon(Icons.home),
             title: Text('Home'),
+            onTap: (){
+              Navigator.pop(context);
+            },
           ),
           ListTile(
-            leading: Icon(Icons.list),
+            leading: Icon(Icons.list, color: Colors.blueAccent),
+            title: Text('Services'),
+            onTap: () {
+              Navigator.pushNamed(context, Constants.vehicle_list);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.list, color: Colors.blueAccent),
             title: Text('Vehicle'),
+            onTap: () {
+              Navigator.pushNamed(context, Constants.vehicle_list);
+            },
           ),
           ListTile(
-            leading: Icon(Icons.list),
+            leading: Icon(Icons.list, color: Colors.blueAccent),
             title: Text('Route'),
+            onTap: () {
+              Navigator.pushNamed(context, Constants.route_list);
+            },
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: Icon(Icons.favorite, color: Colors.red,),
             title: Text('Favorite'),
+            onTap: () {
+              Navigator.pushNamed(context, Constants.vehicle_list);
+            },
           ),
           ListTile(
             leading: Icon(Icons.settings),
             title: Text('Settings'),
+            onTap: () {
+              Navigator.pushNamed(context, Constants.vehicle_list);
+            },
           ),
         ],
       ),
