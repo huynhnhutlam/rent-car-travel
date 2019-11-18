@@ -131,7 +131,6 @@ void _addMarker(LatLng location, String address, {double distance}) {
     destinationController.text = intendedLocation;
     String route = await _googleMapsServices.getRouteCoordinates(
         _initialPosition, destination);
-        _mapController.animateCamera(CameraUpdate.newLatLngBounds(LatLngBounds(northeast: destination, southwest: _initialPosition),  50.0));
     createRoute(route);
     notifyListeners();
   }

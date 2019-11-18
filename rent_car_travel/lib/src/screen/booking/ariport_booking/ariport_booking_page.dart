@@ -6,6 +6,7 @@ import 'package:rent_car_travel/src/screen/booking/ariport_booking/selected_rout
 
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_aripot.dart';
 
 class AirportBookingPage extends StatefulWidget {
   @override
@@ -25,7 +26,10 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
               child: InkWell(
                   child: Text('Tiếp'),
                   onTap: () {
-                    Navigator.pushNamed(context, Constants.select_date);
+                    Navigator.push(context, MaterialPageRoute(builder: (builder)=>SelectedDate(
+                      pickupPoint: appState.locationController.text,
+                      dropPoint: appState.destinationController.text,
+                    )));
                   }))
         ],
       ),
