@@ -4,14 +4,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rent_car_travel/src/bloc/home_bloc.dart';
 import 'package:rent_car_travel/src/bloc/splash_bloc.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
-import 'package:rent_car_travel/src/screen/booking/booking_page.dart';
+import 'package:rent_car_travel/src/screen/booking/ariport_booking/ariport_booking_page.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_page.dart';
-import 'package:rent_car_travel/src/screen/detail/detailCar/detailCar_home_page.dart';
+import 'package:rent_car_travel/src/screen/booking/travel/travel_booking_page.dart';
+import 'package:rent_car_travel/src/screen/booking/wedding_booking/wedding_booking_page.dart';
 import 'package:rent_car_travel/src/screen/home/home_page.dart';
+import 'package:rent_car_travel/src/screen/map/map.dart';
+import 'package:rent_car_travel/src/screen/route/list_route/route_page.dart';
 import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
 import 'package:rent_car_travel/src/screen/sign_up/sign_up.dart';
 import 'package:rent_car_travel/src/screen/splash/splash_page.dart';
 import 'package:rent_car_travel/src/screen/start_screen/get_started.dart';
+import 'package:rent_car_travel/src/screen/vehicle/detailCar/detailCar_home_page.dart';
+import 'package:rent_car_travel/src/screen/vehicle/list_vehicle/vehicle_page.dart';
 import 'package:rent_car_travel/src/utils/application.dart';
 import 'package:rent_car_travel/src/utils/translations.dart';
 
@@ -73,11 +78,26 @@ class _MyAppState extends State<MyApp> {
       case Constants.signUpScreen:
         return new MaterialPageRoute(builder: (context) => SignUpPage());
       case Constants.detailCar:
-        return new MaterialPageRoute(builder: (context) => DetailCar(vehicle: settings.arguments,));
-      case Constants.booking:
-        return new MaterialPageRoute(builder: (context) => BookingPage());
+        return new MaterialPageRoute(
+            builder: (context) => DetailCar(
+                  vehicle: settings.arguments,
+                ));
+      case Constants.wedding_booking:
+        return new MaterialPageRoute(
+            builder: (context) => WeddingBookingPage());
       case Constants.select_date:
         return new MaterialPageRoute(builder: (context) => SelectDatePage());
+      case Constants.map_page:
+        return new MaterialPageRoute(builder: (context) => MapSample());
+      case Constants.vehicle_list:
+        return new MaterialPageRoute(builder: (context) => VehiclePage());
+      case Constants.route_list:
+        return new MaterialPageRoute(builder: (context) => RoutePage());
+      case Constants.airport_booking:
+        return new MaterialPageRoute(
+            builder: (context) => AirportBookingPage());
+      case Constants.travel_booking:
+        return new MaterialPageRoute(builder: (context) => TravelBookingPage());
         break;
       default:
         return null;

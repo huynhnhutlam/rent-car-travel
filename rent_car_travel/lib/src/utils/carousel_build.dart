@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class CarouselBuild extends StatefulWidget {
   CarouselBuild({Key key, this.imageUrls,
   this.animationCurve = Curves.ease,
+  this.borderRadius = 0,
   this.animationDuration = const Duration(milliseconds: 300),
    this.autoplayDuration = const Duration(seconds: 3),
   this.autoplay = true}) : super(key: key);
@@ -13,6 +14,7 @@ class CarouselBuild extends StatefulWidget {
   final Curve animationCurve;
   final Duration animationDuration;
   final Duration autoplayDuration;
+  final double borderRadius;
   @override
   _CarouselBuildState createState() => _CarouselBuildState();
 }
@@ -50,25 +52,25 @@ class _CarouselBuildState extends State<CarouselBuild> {
   Widget build(BuildContext context) {
     return new Stack(
       children: <Widget>[
-        _buildPageView(context),
+        _buildPageView(context, radius: widget.borderRadius),
         _buildDotIncator(context),
       ],
     );
   }
 
-  Widget _buildPageView(BuildContext context) => new PageView(
-        children: _buildPageViewChildren(context),
+  Widget _buildPageView(BuildContext context, {double radius}) => new PageView(
+        children: _buildPageViewChildren(context,radius),
         onPageChanged: this.onPageChanged(),
         physics: new AlwaysScrollableScrollPhysics(),
         controller: _controller,
       );
-  List<Widget> _buildPageViewChildren(BuildContext context) {
+  List<Widget> _buildPageViewChildren(BuildContext context, double radius) {
     return this
         .widget
         .imageUrls
         .map((String url) => Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(radius),
             image: DecorationImage(
               image: NetworkImage(url),
               fit: BoxFit.cover

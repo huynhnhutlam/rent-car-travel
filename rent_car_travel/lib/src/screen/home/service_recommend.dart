@@ -56,14 +56,7 @@ class _ServiceRecommendState extends State<ServiceRecommend> {
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
-                        return _singleService(context, snapshot, index
-                            // nameCar: snapshot.data[index].nameCar,
-                            // imageCar: snapshot.data[index].imageCar,
-                            // mode: snapshot.data[index].mode,
-                            // numberOfSeats: snapshot.data[index].numberOfSeats,
-                            // licensePlates: snapshot.data[index].licensePlates,
-                            // status: snapshot.data[index].status,
-                            );
+                        return _singleService(context, snapshot, index);
                       },
                     );
                 }),
@@ -76,13 +69,22 @@ class _ServiceRecommendState extends State<ServiceRecommend> {
 
 Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
   var data = snapshot.data[index];
-  final styleTitle = TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16);
+  final styleTitle =
+      TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16);
   final styleDescription = TextStyle(color: Colors.grey[600], fontSize: 14);
   return GestureDetector(
-    onTap: (){
-      Navigator.pushNamed(context, Constants.booking);
+    onTap: () {
+      if (index == 0) {
+        Navigator.pushNamed(context, Constants.travel_booking);
+      }
+      if (index == 1) {
+        Navigator.pushNamed(context, Constants.airport_booking);
+      }
+      if (index == 2) {
+        Navigator.pushNamed(context, Constants.wedding_booking);
+      }
     },
-      child: Container(
+    child: Container(
       height: 80,
       margin: EdgeInsets.only(
         top: 10,
@@ -104,11 +106,16 @@ Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(bottom: 5),
-                      child: Text(data.nameService, style: styleTitle,)),
+                      margin: EdgeInsets.only(bottom: 5),
+                      child: Text(
+                        data.nameService,
+                        style: styleTitle,
+                      )),
                   Container(
                       child: Text(
-                          '''${data.description}''', style: styleDescription,))
+                    '''${data.description}''',
+                    style: styleDescription,
+                  ))
                 ],
               ),
             ),
@@ -117,10 +124,8 @@ Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
             height: 70,
             width: 70,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                  image: NetworkImage(data.image))
-            ),
+                borderRadius: BorderRadius.circular(15),
+                image: DecorationImage(image: NetworkImage(data.image))),
           )
         ],
       ),

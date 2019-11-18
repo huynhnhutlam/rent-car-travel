@@ -35,7 +35,7 @@ class TabbarSideMenu extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[Text('Name')],
+                children: <Widget>[Text('Lâm')],
               ),
             ),
           ),

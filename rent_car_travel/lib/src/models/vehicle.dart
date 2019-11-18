@@ -6,15 +6,18 @@ class Vehicle {
   final String mode;
   final int numberOfSeats;
   final String licensePlates;
-  final String status;
+  final int status;
+  final String description;
 
-  Vehicle(
-      {this.id,
-      this.nameCar,
-      this.imageCar,
-      this.categoryID,
-      this.mode,
-      this.numberOfSeats,
-      this.licensePlates,
-      this.status});
+  Vehicle({
+    this.id,
+    this.nameCar,
+    this.imageCar,
+    this.categoryID,
+    this.mode,
+    this.numberOfSeats,
+    this.licensePlates,
+    this.status,
+    this.description,
+  });
 }
