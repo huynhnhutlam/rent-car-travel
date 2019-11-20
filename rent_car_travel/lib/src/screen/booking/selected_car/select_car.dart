@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 
@@ -11,11 +12,12 @@ class SelectCar extends StatefulWidget {
   @override
   _SelectCarState createState() => _SelectCarState();
 }
-
+var formatPrice = NumberFormat.currency();
 class _SelectCarState extends State<SelectCar> {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
+    int price = appState.distance.toInt() * 30000;
     return Scaffold(
       appBar: AppBar(
         title: Text('Chọn xe'),
@@ -29,6 +31,8 @@ class _SelectCarState extends State<SelectCar> {
               children: <Widget>[
                 _imageCar(image: AssetImage('lib/res/images/bg.jpg')),
                 _line(),
+                _infoCar(nameCar: 'Mazda 5', numberOfSeats: 7, price: price),
+                _line(),
                 _selected(context)
               ],
             ),
@@ -36,27 +40,69 @@ class _SelectCarState extends State<SelectCar> {
         ),
       ),
       bottomNavigationBar: _buildBottomButton(
-        onPressed: () {},
+        onPressed: () {
+
+        },
       ),
     );
   }
 
   Widget _selected(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: <Widget>[
-        _selectDate(widget.timeTogo, widget.timeReturn),
-        _line(),
-        _selectRoute(appState.locationController.text, title: 'Điểm đón'),
-        _selectRoute(appState.destinationController.text, title: 'Điểm đến'),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _selectDate(widget.timeTogo, widget.timeReturn),
+            _line(),
+            _selectRoute(appState.locationController.text, title: 'Điểm đón'),
+            _selectRoute(appState.destinationController.text, title: 'Điểm đến'),
+          ],
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: Colors.black.withOpacity(0.3)
+          ),
+        )
       ],
     );
   }
 }
 
-Widget _infoCar() {
-  return Container();
+Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
+  TextStyle titleStyle = TextStyle(
+      color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
+  TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
+  return Container(
+    child: Column(
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Expanded(child: Text('Tên xe: ', style: titleStyle,)),
+            Text(nameCar, style: textStyle,),
+          ],
+        ),
+        _line(),
+        Row(
+          children: <Widget>[
+            Expanded(child: Text('Loại xe: ', style: titleStyle,)),
+            Text('${numberOfSeats.toInt()} chỗ', style: textStyle),
+          ],
+        ),
+        _line(),
+        Row(
+          children: <Widget>[
+            Expanded(child: Text('Giá xe: ', style: titleStyle,)),
+            Text('${price.toInt()} đ', style: textStyle),
+          ],
+        )
+      ],
+    ),
+  );
 }
 
 Widget _line() {
@@ -72,6 +118,7 @@ Widget _selectDate(String timeTogo, String timeReturn) {
       color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
   TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
   return Container(
+    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -104,7 +151,7 @@ Widget _selectRoute(String text, {String title = ''}) {
       color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
   TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
   return Container(
-    padding: EdgeInsets.only(top: 12),
+    padding: EdgeInsets.only(top: 12, left: 4, right: 4),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -138,7 +185,7 @@ Widget _imageCar({ImageProvider<dynamic> image}) {
           )
         : Container(
             child: FlatButton(
-              onPressed: (){},
+              onPressed: () {},
               child: Text('Chọn'),
             ),
           ),

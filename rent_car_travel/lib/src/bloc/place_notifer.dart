@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:rent_car_travel/src/data/place_service.dart';
 
 class AppState with ChangeNotifier {
@@ -12,18 +13,27 @@ class AppState with ChangeNotifier {
   GoogleMapController _mapController;
   GoogleMapsServices _googleMapsServices = GoogleMapsServices();
   TextEditingController locationController = TextEditingController();
-  /*  String locationController ; */
-  TextEditingController destinationController = TextEditingController();
-  LatLng get initialPosition => _initialPosition;
-  LatLng get lastPosition => _lastPosition;
-  GoogleMapsServices get googleMapsServices => _googleMapsServices;
-  GoogleMapController get mapController => _mapController;
-  Set<Marker> get markers => _markers;
-  Set<Polyline> get polyLines => _polyLines;
 
+  /*  String locationController ; */
+  double distance;
+  TextEditingController destinationController = TextEditingController();
+
+  LatLng get initialPosition => _initialPosition;
+
+  LatLng get lastPosition => _lastPosition;
+
+  GoogleMapsServices get googleMapsServices => _googleMapsServices;
+
+  GoogleMapController get mapController => _mapController;
+
+  Set<Marker> get markers => _markers;
+
+  Set<Polyline> get polyLines => _polyLines;
+  var distanceKm = NumberFormat('###.0', 'vi');
   AppState() {
     _getUserLocation();
   }
+
 // ! TO GET THE USERS LOCATION
   void _getUserLocation() async {
     Position position = await Geolocator()
@@ -55,13 +65,13 @@ class AppState with ChangeNotifier {
   }
 
   // ! ADD A MARKER ON THE MAO
-void _addMarker(LatLng location, String address, {double distance}) {
+  void _addMarker(LatLng location, String address, {double distance}) {
     _markers.clear();
     _markers.add(Marker(
         markerId: MarkerId(_lastPosition.toString()),
         position: location,
         infoWindow: InfoWindow(
-            title: address, snippet: "Khoảng cách: ${distance.toDouble()} km"),
+            title: address, snippet: "Khoảng cách: ${distanceKm.format(distance.toDouble())} km"),
         icon: BitmapDescriptor.defaultMarker));
 
     notifyListeners();
@@ -120,14 +130,15 @@ void _addMarker(LatLng location, String address, {double distance}) {
     double latitude = placemark[0].position.latitude;
     double longitude = placemark[0].position.longitude;
     double distanceInMeters = await Geolocator().distanceBetween(
-      latitude,
-      longitude,
       _initialPosition.latitude,
       _initialPosition.longitude,
+      latitude,
+      longitude,
+
     );
-    double distanceKm = distanceInMeters / 1000;
+    distance = distanceInMeters / 1000;
     LatLng destination = LatLng(latitude, longitude);
-    _addMarker(destination, intendedLocation,distance: distanceKm);
+    _addMarker(destination, intendedLocation, distance: distance);
     destinationController.text = intendedLocation;
     String route = await _googleMapsServices.getRouteCoordinates(
         _initialPosition, destination);
