@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_car_travel/src/screen/booking/selected_car/select_car.dart';
 
 class SelectedDate extends StatefulWidget {
   final String pickupPoint;
@@ -7,15 +8,16 @@ class SelectedDate extends StatefulWidget {
 
   const SelectedDate({Key key, this.pickupPoint, this.dropPoint})
       : super(key: key);
+
   @override
   _SelectedDateState createState() => _SelectedDateState();
 }
 
 class _SelectedDateState extends State<SelectedDate> {
+  DateTime _now = new DateTime.now();
   DateTime _date = new DateTime.now();
-  DateTime _dateReturn = new DateTime.now();
   DateTime pickedGoto;
-  DateTime pickReturn;
+
   Future<void> _selectedDate(BuildContext context) async {
     pickedGoto = await showDatePicker(
         context: context,
@@ -24,7 +26,7 @@ class _SelectedDateState extends State<SelectedDate> {
         lastDate: DateTime(2100));
     if (pickedGoto != null && pickedGoto != _date) {
       setState(() {
-        if (pickedGoto.isBefore(_date)) {
+        if (pickedGoto.isBefore(_now)) {
           _showDialogTime(
               context, 'Thời gian đi không được nhỏ hơn thời gian hiện tại');
         } else {
@@ -43,7 +45,7 @@ class _SelectedDateState extends State<SelectedDate> {
             content: Text(contentAlert),
             actions: <Widget>[
               new FlatButton(
-                child: Text('OK'),
+                child: Text('Chọn lại'),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -53,89 +55,87 @@ class _SelectedDateState extends State<SelectedDate> {
         });
   }
 
-  Future<void> _selectedDateReturn(BuildContext context) async {
-    pickReturn = await showDatePicker(
-        context: context,
-        initialDate: _dateReturn,
-        firstDate: DateTime(2018, 8),
-        lastDate: DateTime(2100));
-    if (pickReturn != null && pickReturn != _dateReturn) {
-      setState(() {
-        if (pickReturn.isBefore(_date)) {
-          _showDialogTime(
-              context, 'Thời gian về được chọn nhỏ hơn thời gian đi');
-        } else {
-          _dateReturn = pickReturn;
-        }
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    String textTime = '';
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(bottom: 12),
-            child: _InputDropdown(
-              valueText: DateFormat.d().format(_date) +
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chọn ngày'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 12),
+              child: _InputDropdown(
+                valueText: DateFormat.d().format(_date) +
+                    '/' +
+                    DateFormat.M().format(_date) +
+                    '/' +
+                    DateFormat.y().format(_date),
+                onPressed: () {
+                  _selectedDate(context);
+                },
+                valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
+                timePicker: 'Time to go',
+              ),
+            ),
+
+            Container(
+              margin: EdgeInsets.only(bottom: 12),
+              alignment: Alignment.centerLeft,
+              child: Text('Tuyến đường đã chọn',
+                  style: TextStyle(
+                    color: Color(0xFF737373),
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.only(bottom: 12),
+                          child: _infoSelected(widget.pickupPoint,
+                              title: 'Điểm đón')),
+                      _infoSelected(widget.dropPoint, title: 'Điểm đến'),
+                    ],
+                  ),
+                  Container(
+                    height: 136,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.black.withOpacity(0.2),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 56,
+        padding: EdgeInsets.all(16),
+        child: RaisedButton(
+          color: Colors.blueAccent,
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (builder) => SelectCar(
+              timeTogo: DateFormat.d().format(_date) +
                   '/' +
                   DateFormat.M().format(_date) +
                   '/' +
-                  DateFormat.y().format(_date),
-              onPressed: () {
-                _selectedDate(context);
-              },
-              valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
-              timePicker: 'Time to go',
-            ),
+                  DateFormat.y().format(_date) /*+ ' - ' + DateFormat.Hm().format(_date)*/,
+            )));
+          },
+          child: Text(
+            'Next',
+            style: TextStyle(color: Colors.white),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 12),
-            child: _InputDropdown(
-              valueText: DateFormat.d().format(_dateReturn) +
-                  '/' +
-                  DateFormat.M().format(_dateReturn) +
-                  '/' +
-                  DateFormat.y().format(_dateReturn),
-              onPressed: () {
-                _selectedDateReturn(context);
-              },
-              valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
-              timePicker: 'Time return',
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 12),
-            alignment: Alignment.centerLeft,
-            child: Text('Tuyến đường đã chọn', style: TextStyle(color: Color(0xFF737373), fontWeight: FontWeight.bold,)),
-          ),
-          Container(
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        child: _infoSelected(widget.pickupPoint,
-                            title: 'Điểm đón')),
-                    _infoSelected(widget.dropPoint, title: 'Điểm đến'),
-                  ],
-                ),
-                Container(
-                  height: 136,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.black.withOpacity(0.2),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
