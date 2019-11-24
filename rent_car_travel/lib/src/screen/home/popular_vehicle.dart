@@ -13,8 +13,8 @@ class PopularVehicle extends StatefulWidget {
 
 class _PopularVehicleState extends State<PopularVehicle> {
   Future<List<Vehicle>> _getVehicle() async {
-    var data = await http
-        .get("https://my-json-server.typicode.com/huynhnhutlam/demoJson/vehicle");
+    var data = await http.get(
+        "https://my-json-server.typicode.com/huynhnhutlam/demoJson/vehicle");
     var jsonData = json.decode(data.body) as List;
     List<Vehicle> vehicles = new List<Vehicle>();
     for (var obj in jsonData) {
@@ -48,20 +48,21 @@ class _PopularVehicleState extends State<PopularVehicle> {
           new Container(
             height: 250,
             child: FutureBuilder(
-                future: _getVehicle(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.data == null) {
-                    return new Text('Loading...');
-                  } else
-                    return new ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return _singlePopularVehicle(context, snapshot, index);
-                      },
-                    );
-                }),
+              future: _getVehicle(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                  return new Text('Loading...');
+                } else
+                  return new ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return _singlePopularVehicle(context, snapshot, index);
+                    },
+                  );
+              },
+            ),
           )
         ],
       ),
@@ -96,74 +97,75 @@ Widget _singlePopularVehicle(
         Navigator.pushNamed(context, Constants.detailCar, arguments: data);
       },
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: new BorderRadius.circular(5.0),
-              child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 150.0,
-                  decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                    fit: BoxFit.fill,
-                    image: new NetworkImage(data.imageCar),
-                  ))),
-            ),
-            Expanded(
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  margin: EdgeInsets.only(top: 10),
-                  child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: new BorderRadius.circular(5.0),
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150.0,
+                decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                  fit: BoxFit.fill,
+                  image: new NetworkImage(data.imageCar),
+                ))),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              margin: EdgeInsets.only(top: 10),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(data.nameCar,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green)),
+                        Text(
+                          data.status == 1
+                              ? 'Open'
+                              : data.status == 2 ? 'Close' : 'Busy',
+                          style: TextStyle(
+                            color: data.status == 1
+                                ? Colors.green
+                                : data.status == 0 ? Colors.red : Colors.yellow,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(data.nameCar,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green)),
-                            Text(
-                              data.status == 1
-                                  ? 'Open'
-                                  : data.status == 0 ? 'Close' : 'Busy',
-                              style: TextStyle(
-                                color: data.status == 1
-                                    ? Colors.green
-                                    : data.status == 0
-                                        ? Colors.red
-                                        : Colors.yellow,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                              padding: EdgeInsets.all(2),
-                              margin: EdgeInsets.only(right: 5),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  color: Colors.grey[350].withOpacity(0.5)),
-                              child: Text(data.mode)),
-                          Container(
-                              padding: EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  color: Colors.grey[350].withOpacity(0.5)),
-                              child: Text('${data.numberOfSeats}' + " chỗ"))
-                        ],
+                          padding: EdgeInsets.all(2),
+                          margin: EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              color: Colors.grey[350].withOpacity(0.5)),
+                          child: Text(data.mode)),
+                      Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.grey[350].withOpacity(0.5)),
+                        child: Text('${data.numberOfSeats}' + " chỗ"),
                       )
                     ],
-                  )),
-            )
-          ]),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     ),
   );
 }

@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/route.dart';
 import 'package:rent_car_travel/src/screen/route/detail_route/detail_home_page.dart';
@@ -14,25 +17,16 @@ class PopularRoute extends StatefulWidget {
 }
 
 class _PopularRouteState extends State<PopularRoute> {
-  Future<List<Routes>> _getRoute() async {
-    var data = await http
-        .get("https://my-json-server.typicode.com/huynhnhutlam/demoJson/route");
-    var jsonData = json.decode(data.body) as List;
-    List<Routes> routes = new List<Routes>();
-    for (var obj in jsonData) {
-      Routes route = Routes(
-          id: obj["id"],
-          nameRoute: obj["nameRoute"],
-          image: obj["image"],
-          description: obj["description"],
-          rating: obj["rating"],
-          lat: obj["lat"],
-          lng: obj["lng"]
-          );
-      routes.add(route);
-    }
+  Future<List<Routes>> fetchRoute(http.Client client) async {
+    final response = await client.get(ApiHttp.urlListRoute);
 
-    return routes;
+    return compute(parseRoutes, response.body);
+  }
+
+  List<Routes> parseRoutes(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Routes>((json) => Routes.fromJson(json)).toList();
   }
 
   @override
@@ -50,10 +44,10 @@ class _PopularRouteState extends State<PopularRoute> {
           new Container(
             height: 200,
             child: FutureBuilder(
-                future: _getRoute(),
+                future: fetchRoute(http.Client()),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.data == null) {
-                    return new CircularProgressIndicator();
+                    return new CupertinoActivityIndicator();
                   } else
                     return new ListView.builder(
                       shrinkWrap: true,
@@ -66,11 +60,13 @@ class _PopularRouteState extends State<PopularRoute> {
                           description: snapshot.data[index].description,
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (builder) => DetailRouteHome(
-                                          route: snapshot.data[index],
-                                        )));
+                              context,
+                              MaterialPageRoute(
+                                builder: (builder) => DetailRouteHome(
+                                  route: snapshot.data[index],
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
@@ -130,15 +126,19 @@ class _SinglePopularRouteState extends State<SinglePopularRoute> {
             bottom: 5,
             right: 16,
             child: Container(
-                margin: EdgeInsets.only(top: 10),
-                child: Text(widget.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 16,
-                        shadows: [BoxShadow(blurRadius: 4)],
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white))),
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                widget.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  shadows: [BoxShadow(blurRadius: 4)],
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           )
         ]),
       ),
