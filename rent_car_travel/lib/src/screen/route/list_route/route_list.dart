@@ -1,36 +1,61 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:rent_car_travel/src/models/route.dart';
 
 class RouteList extends StatefulWidget {
   @override
   _RouteListState createState() => _RouteListState();
 }
+
 double radius = 8;
+Future<List<Routes>> fetchRoute(http.Client client) async {
+  final response = await client.get(ApiHttp.urlListRoute);
+
+  return compute(parseRoutes, response.body);
+}
+
+List<Routes> parseRoutes(String responseBody) {
+  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+  return parsed.map<Routes>((json) => Routes.fromJson(json)).toList();
+}
+
 class _RouteListState extends State<RouteList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GridView.builder(
-        itemCount: 5,
-        physics: ScrollPhysics(),
-        shrinkWrap: true,
-        padding: EdgeInsets.all(16),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16.0,
-            crossAxisSpacing: 24.0,
-            childAspectRatio: 2 / 3),
-        itemBuilder: (context, index) {
-          return _itemRouteList(
-            nameRoute: 'Cà Mau',
-            description: 'Description',
-            image: 'https://cdn2.ivivu.com/2018/03/20/17/mui-ca-mau.jpg'
-          );
-        },
-      ),
+    return FutureBuilder(
+      future: fetchRoute(http.Client()),
+      builder: (context, snapshot) {
+        return snapshot.data != null
+            ? Container(
+                child: GridView.builder(
+                  itemCount: snapshot.data.length,
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16.0,
+                      crossAxisSpacing: 24.0,
+                      childAspectRatio: 2 / 3),
+                  itemBuilder: (context, index) {
+                    return _itemRouteList(snapshot, index);
+                  },
+                ),
+              )
+            : CupertinoActivityIndicator();
+      },
     );
   }
 
-  Widget _itemRouteList({String nameRoute, String description, String image}) {
+  Widget _itemRouteList(AsyncSnapshot snapshot, int index) {
+    var data = snapshot.data[index];
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -50,14 +75,13 @@ class _RouteListState extends State<RouteList> {
           Expanded(
             flex: 2,
             child: _imageRoute(
-              image: NetworkImage(
-                  image),
+              image: NetworkImage(data.image),
               chilld: Stack(
                 children: <Widget>[
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: _ratingRoute(),
+                    child: _ratingRoute(data.rating),
                   ),
                 ],
               ),
@@ -70,10 +94,10 @@ class _RouteListState extends State<RouteList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _textNameRoute(nameRoute),
+                  _textNameRoute(data.nameRoute),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
-                    child: _textDesriptionRout(description),
+                    child: _textDesriptionRout(data.description),
                   ),
                 ],
               ),
@@ -122,7 +146,7 @@ Widget _imageRoute({ImageProvider<dynamic> image, Widget chilld}) {
   );
 }
 
-Widget _ratingRoute() {
+Widget _ratingRoute(double rating) {
   return Container(
     decoration: _decorate,
     padding: EdgeInsets.all(2),
@@ -134,7 +158,7 @@ Widget _ratingRoute() {
           margin: EdgeInsets.symmetric(vertical: 4),
           child: _rowStar(3),
         ),
-        _textRating('3.0'),
+        _textRating('${rating.toDouble()}'),
       ],
     ),
   );

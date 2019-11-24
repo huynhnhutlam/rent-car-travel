@@ -58,8 +58,7 @@ class _SelectRouteState extends State<SelectRoute> {
           SizedBox(
             height: 4,
           ),
-          _listAirport(
-          ),
+          _listAirport(),
         ],
       ),
     );

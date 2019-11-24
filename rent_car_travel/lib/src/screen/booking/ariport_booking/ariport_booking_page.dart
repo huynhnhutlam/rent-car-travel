@@ -26,10 +26,14 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
               child: InkWell(
                   child: Text('Tiếp'),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (builder)=>SelectedDate(
-                      pickupPoint: appState.locationController.text,
-                      dropPoint: appState.destinationController.text,
-                    )));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => SelectedDate(
+                                  pickupPoint: appState.locationController.text,
+                                  dropPoint:
+                                      appState.destinationController.text,
+                                )));
                   }))
         ],
       ),
@@ -46,7 +50,7 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
                   Container(
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                          target: appState.initialPosition, zoom: 8.0),
+                          target: appState.initialPosition, zoom: 12.0),
                       onMapCreated: appState.onCreated,
                       myLocationEnabled: true,
                       mapType: MapType.normal,
@@ -57,18 +61,19 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
                     ),
                   ),
                   Positioned(
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 1.9,
-                        width: MediaQuery.of(context).size.height,
-                        child: SelectRoute(
-                          controllerPickUp: appState.locationController.text,
-                          onSelected: onPlaceSelected,
-                          controllerGoto: appState.destinationController,
-                        ),
-                      ))
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 1.9,
+                      width: MediaQuery.of(context).size.height,
+                      child: SelectRoute(
+                        controllerPickUp: appState.locationController.text,
+                        onSelected: onPlaceSelected,
+                        controllerGoto: appState.destinationController,
+                      ),
+                    ),
+                  )
                 ],
               ),
       ),

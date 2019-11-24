@@ -12,12 +12,23 @@ class SelectCar extends StatefulWidget {
   @override
   _SelectCarState createState() => _SelectCarState();
 }
+
 var formatPrice = NumberFormat.currency();
+
+String currencyFormatter(int n) {
+  final formatter = new NumberFormat.currency(
+    locale: 'vi',
+    decimalDigits: 0,
+    symbol: "",
+  );
+  return formatter.format(n);
+}
+
 class _SelectCarState extends State<SelectCar> {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    int price = appState.distance.toInt() * 30000;
+    int price = 30000;
     return Scaffold(
       appBar: AppBar(
         title: Text('Chọn xe'),
@@ -33,16 +44,14 @@ class _SelectCarState extends State<SelectCar> {
                 _line(),
                 _infoCar(nameCar: 'Mazda 5', numberOfSeats: 7, price: price),
                 _line(),
-                _selected(context)
+                _selected(context),
               ],
             ),
           ),
         ),
       ),
       bottomNavigationBar: _buildBottomButton(
-        onPressed: () {
-
-        },
+        onPressed: () {},
       ),
     );
   }
@@ -57,16 +66,16 @@ class _SelectCarState extends State<SelectCar> {
             _selectDate(widget.timeTogo, widget.timeReturn),
             _line(),
             _selectRoute(appState.locationController.text, title: 'Điểm đón'),
-            _selectRoute(appState.destinationController.text, title: 'Điểm đến'),
+            _selectRoute(appState.destinationController.text,
+                title: 'Điểm đến'),
           ],
         ),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 180,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Colors.black.withOpacity(0.3)
-          ),
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.black.withOpacity(0.3)),
         )
       ],
     );
@@ -82,22 +91,37 @@ Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Expanded(child: Text('Tên xe: ', style: titleStyle,)),
-            Text(nameCar, style: textStyle,),
+            Expanded(
+                child: Text(
+              'Tên xe: ',
+              style: titleStyle,
+            )),
+            Text(
+              nameCar,
+              style: textStyle,
+            ),
           ],
         ),
         _line(),
         Row(
           children: <Widget>[
-            Expanded(child: Text('Loại xe: ', style: titleStyle,)),
+            Expanded(
+                child: Text(
+              'Loại xe: ',
+              style: titleStyle,
+            )),
             Text('${numberOfSeats.toInt()} chỗ', style: textStyle),
           ],
         ),
         _line(),
         Row(
           children: <Widget>[
-            Expanded(child: Text('Giá xe: ', style: titleStyle,)),
-            Text('${price.toInt()} đ', style: textStyle),
+            Expanded(
+                child: Text(
+              'Giá xe: ',
+              style: titleStyle,
+            )),
+            Text('${currencyFormatter(price.toInt())} đ', style: textStyle),
           ],
         )
       ],
@@ -211,7 +235,7 @@ Widget _buildBottomButton({Function onPressed}) {
       onPressed: onPressed,
       color: Colors.blueAccent,
       child: Text(
-        'Next',
+        'Tiếp tục',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

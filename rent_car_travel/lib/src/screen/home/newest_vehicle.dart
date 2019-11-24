@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/screen/map/map_example.dart';
 import 'package:rent_car_travel/src/screen/widget/title_home.dart';
 
 class NewestCar extends StatefulWidget {
@@ -47,7 +48,9 @@ class _NewestCarState extends State<NewestCar> {
         children: <Widget>[
           TitleHome(
             text: 'This Newest',
-            onTap: (){},
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (builder)=> MapEx()));
+            },
           ),
           Container(
             margin: EdgeInsets.only(top: 10),
