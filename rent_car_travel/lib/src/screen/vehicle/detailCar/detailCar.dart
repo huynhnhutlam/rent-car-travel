@@ -40,14 +40,14 @@ class Detail extends StatelessWidget {
                 ),
                 Expanded(
                   child: _detailInfo(
-                    data.status == 0
+                    data.status == 1
                         ? 'Open'
-                        : data.status == 1 ? 'Closed' : 'Busy',
+                        : data.status == 2 ? 'Closed' : 'Busy',
                     'Status: ',
                     style: TextStyle(
-                        color: data.status == 0
+                        color: data.status == 1
                             ? Colors.green
-                            : data.status == 1 ? Colors.red: Colors.amber,
+                            : data.status == 2 ? Colors.red: Colors.amber,
                         fontSize: sizeText),
                     icon: Icon(Icons.help_outline, size: 18),
                   ),

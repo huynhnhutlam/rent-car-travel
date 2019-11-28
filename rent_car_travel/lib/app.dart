@@ -84,7 +84,9 @@ class _MyAppState extends State<MyApp> {
                 ));
       case Constants.wedding_booking:
         return new MaterialPageRoute(
-            builder: (context) => WeddingBookingPage());
+            builder: (context) => WeddingBookingPage(
+              titleService: settings.arguments,
+            ));
       case Constants.select_date:
         return new MaterialPageRoute(builder: (context) => SelectDatePage());
       case Constants.map_page:
@@ -95,9 +97,13 @@ class _MyAppState extends State<MyApp> {
         return new MaterialPageRoute(builder: (context) => RoutePage());
       case Constants.airport_booking:
         return new MaterialPageRoute(
-            builder: (context) => AirportBookingPage());
+            builder: (context) => AirportBookingPage(
+              titleService: settings.arguments,
+            ));
       case Constants.travel_booking:
-        return new MaterialPageRoute(builder: (context) => TravelBookingPage());
+        return new MaterialPageRoute(builder: (context) => TravelBookingPage(
+          titleService: settings.arguments,
+        ));
         break;
       default:
         return null;

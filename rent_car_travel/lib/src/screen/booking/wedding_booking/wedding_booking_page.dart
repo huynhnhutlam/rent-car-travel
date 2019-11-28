@@ -5,11 +5,42 @@ import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_p
 import 'package:rent_car_travel/src/screen/booking/wedding_booking/selected_route/selectedRoute.dart';
 
 class WeddingBookingPage extends StatelessWidget {
+  final String titleService;
+
+  WeddingBookingPage({this.titleService});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Route'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text(
+          titleService,
+          style: TextStyle(color: Colors.blue, fontSize: 18),
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          Center(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.all(12),
+                margin: EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                      color: Colors.white,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Container(
@@ -31,7 +62,7 @@ class WeddingBookingPage extends StatelessWidget {
         child: RaisedButton(
           color: Colors.blueAccent,
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (builder){
+            Navigator.push(context, MaterialPageRoute(builder: (builder) {
               return SelectDatePage();
             }));
           },
@@ -44,7 +75,5 @@ class WeddingBookingPage extends StatelessWidget {
     );
   }
 
-  void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
-
-  }
+  void onPlaceSelected(PlaceItemRes place, bool fromAddress) {}
 }

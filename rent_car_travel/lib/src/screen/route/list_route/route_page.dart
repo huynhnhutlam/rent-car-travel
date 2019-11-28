@@ -23,14 +23,26 @@ class _RoutePageState extends State<RoutePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Danh sách tuyến đường', style: TextStyle(color: Colors.white, fontSize: 18,),)),
+      appBar: AppBar(
+        elevation: 5,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.orange),
+        title: Text(
+          'Danh sách tuyến đường',
+          style: TextStyle(
+            color: Colors.orange,
+            fontSize: 18,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Container(
           child: Column(
             children: <Widget>[
               BannerRoute(),
               _tabView(),
-               _tabBarView(),],
+              _tabBarView(),
+            ],
           ),
         ),
       ),

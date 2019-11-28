@@ -3,6 +3,10 @@ import 'package:rent_car_travel/src/models/place_item.dart';
 import 'package:rent_car_travel/src/screen/booking/travel/selected_Route_Travel/selectedRoute.dart';
 
 class TravelBookingPage extends StatefulWidget {
+  final String titleService;
+
+  TravelBookingPage({this.titleService});
+
   @override
   _TravelBookingPageState createState() => _TravelBookingPageState();
 }
@@ -13,21 +17,34 @@ class _TravelBookingPageState extends State<TravelBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: <Widget>[
-            InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 25,
-                  width: 25,
-                  child: Icon(Icons.arrow_back, size: 20,),
-                ),),
-                Text('Travel')
-          ],
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text(
+          widget.titleService,
+          style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
+        centerTitle: true,
+        actions: <Widget>[
+          Center(
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.all(12),
+                margin: EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                      color: Colors.white,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         child: SingleChildScrollView(child: SelectRoute(onSelected: onPlaceSelected,)),

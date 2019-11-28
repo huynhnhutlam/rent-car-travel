@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:rent_car_travel/src/screen/widget/title_home.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PopularVehicle extends StatefulWidget {
   @override
@@ -13,24 +15,28 @@ class PopularVehicle extends StatefulWidget {
 
 class _PopularVehicleState extends State<PopularVehicle> {
   Future<List<Vehicle>> _getVehicle() async {
-    var data = await http.get(
-        "https://my-json-server.typicode.com/huynhnhutlam/demoJson/vehicle");
-    var jsonData = json.decode(data.body) as List;
+    var data = await http.get(ApiHttp.urlListVehicle);
     List<Vehicle> vehicles = new List<Vehicle>();
-    for (var obj in jsonData) {
-      Vehicle vehicle = Vehicle(
-          id: obj["id"],
-          nameCar: obj["nameCar"],
-          imageCar: obj["imageCar"],
-          categoryID: obj["categoryID"],
-          mode: obj["mode"],
-          numberOfSeats: obj["numberOfSeats"],
-          licensePlates: obj["licensePlates"],
-          status: obj["status"],
-          description: obj["description"]);
-      vehicles.add(vehicle);
+    if (data.statusCode == 200) {
+      var jsonData = json.decode(data.body) as List;
+      for (var obj in jsonData) {
+        Vehicle vehicle = Vehicle(
+            id: obj["id"] as int,
+            nameCar: obj["name"],
+            imageCar: obj["image"],
+            categoryID: obj["category_code"],
+            mode: obj["mode"],
+            numberOfSeats: obj["number_of_seats"] as int,
+            licensePlates: obj["license_plates"],
+            status: obj["status"] as int,
+            description: obj["description"],
+            pricePerKm: obj["price_perKm"]);
+        vehicles.add(vehicle);
+      }
+    } else {
+      throw Exception(
+          'We were not able to successfully download the json data.');
     }
-
     return vehicles;
   }
 
@@ -56,7 +62,7 @@ class _PopularVehicleState extends State<PopularVehicle> {
                   return new ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: 4,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       return _singlePopularVehicle(context, snapshot, index);
                     },
@@ -102,13 +108,13 @@ Widget _singlePopularVehicle(
           ClipRRect(
             borderRadius: new BorderRadius.circular(5.0),
             child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 150.0,
-                decoration: new BoxDecoration(
-                    image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: new NetworkImage(data.imageCar),
-                ))),
+              width: MediaQuery.of(context).size.width,
+              height: 150.0,
+              decoration: new BoxDecoration(
+
+              ),
+              child: CachedNetworkImage(imageUrl: data.imageCar, fit: BoxFit.fill,),
+            ),
           ),
           Expanded(
             child: Container(

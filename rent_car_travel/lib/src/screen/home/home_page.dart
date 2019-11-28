@@ -6,6 +6,7 @@ import 'package:rent_car_travel/src/screen/home/popular_vehicle.dart';
 import 'package:rent_car_travel/src/screen/home/service_recommend.dart';
 import 'package:rent_car_travel/src/screen/side_menu/side_menu.dart';
 import 'package:rent_car_travel/src/screen/widget/bottomBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -9,6 +9,10 @@ import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_aripot.dart';
 
 class AirportBookingPage extends StatefulWidget {
+  final String titleService;
+
+  AirportBookingPage({this.titleService});
+
   @override
   _AirportBookingPageState createState() => _AirportBookingPageState();
 }
@@ -20,11 +24,27 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text('Ariport Booking'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text(widget.titleService, style: TextStyle(color: Colors.blue, fontSize: 18),),
         actions: <Widget>[
           Center(
               child: InkWell(
-                  child: Text('Tiếp'),
+                  child: Container(
+                      padding: EdgeInsets.all(12),
+                      margin: EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 4,
+                            offset: Offset(0, 1),
+                            color: Colors.white,
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.white,
+                      ),
+                      child: Text('Tiếp tục', style: TextStyle(color: Colors.blue,),)),
                   onTap: () {
                     Navigator.push(
                         context,

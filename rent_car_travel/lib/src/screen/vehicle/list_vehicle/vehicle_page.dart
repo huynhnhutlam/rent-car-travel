@@ -22,7 +22,18 @@ class _VehiclePageState extends State<VehiclePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Danh sách xe', style: TextStyle(color: Colors.white, fontSize: 18,),)),
+      appBar: AppBar(
+        elevation: 5,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.amber),
+        title: Text(
+          'Danh sách xe',
+          style: TextStyle(
+            color: Colors.amber,
+            fontSize: 18,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Container(
           child: Column(

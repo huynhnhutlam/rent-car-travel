@@ -18,9 +18,8 @@ class SelectRoute extends StatefulWidget {
 }
 
 class _SelectRouteState extends State<SelectRoute> {
-  static final String _text = airport[0]['nameAirport'];
   final TextEditingController _controllerGoto =
-      TextEditingController(text: _text);
+      TextEditingController();
   PlaceItemRes fromAddress;
   PlaceItemRes toAddress;
   String _currentLocation = '';

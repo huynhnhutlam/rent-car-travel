@@ -29,7 +29,9 @@ class AppState with ChangeNotifier {
   Set<Marker> get markers => _markers;
 
   Set<Polyline> get polyLines => _polyLines;
+
   var distanceKm = NumberFormat('###.0', 'vi');
+
   AppState() {
     _getUserLocation();
   }

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/models/vehicle.dart';
+import 'package:rent_car_travel/src/screen/booking/detail_booking/detail_booking.dart';
+
+import 'list_car.dart';
 
 class SelectCar extends StatefulWidget {
   final String timeTogo;
@@ -24,11 +28,17 @@ String currencyFormatter(int n) {
   return formatter.format(n);
 }
 
+String formatter(double n) {
+  final f = new NumberFormat('###.#', 'vi');
+  return f.format(n);
+}
+
 class _SelectCarState extends State<SelectCar> {
+  Vehicle vehicle;
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
-    int price = 30000;
     return Scaffold(
       appBar: AppBar(
         title: Text('Chọn xe'),
@@ -40,9 +50,18 @@ class _SelectCarState extends State<SelectCar> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _imageCar(image: AssetImage('lib/res/images/bg.jpg')),
+                _imageCar(
+                    image: vehicle == null ? null : vehicle.imageCar,
+                    onPressed: () {
+                      _waitData(context);
+                    }),
                 _line(),
-                _infoCar(nameCar: 'Mazda 5', numberOfSeats: 7, price: price),
+                _infoCar(
+                    nameCar: vehicle == null ? null : vehicle.nameCar,
+                    numberOfSeats:
+                        vehicle == null ? null : vehicle.numberOfSeats,
+                    price: vehicle == null ? null : vehicle.pricePerKm,
+                    distance: vehicle == null ? null : appState.distance),
                 _line(),
                 _selected(context),
               ],
@@ -51,9 +70,62 @@ class _SelectCarState extends State<SelectCar> {
         ),
       ),
       bottomNavigationBar: _buildBottomButton(
-        onPressed: () {},
+        onPressed: () {
+          _selectedCar(context);
+        },
       ),
     );
+  }
+
+  void _showDialogTime(BuildContext context, String contentAlert) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            title: Text('Chọn xe'),
+            content: Text(contentAlert),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Chọn lại'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  _selectedCar(BuildContext context) {
+    final appState = Provider.of<AppState>(context);
+    if (vehicle == null) {
+      _showDialogTime(context, 'Vui lòng xe không để trống');
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (builder) => DetailBooking(
+            distance: appState.distance,
+            dropPoint: appState.destinationController.text,
+            pickupPoint: appState.locationController.text,
+            timeReturn: widget.timeReturn,
+            timeTogo: widget.timeTogo,
+            vehicle: vehicle,
+            service: 'Đi sân bay',
+          ),
+        ),
+      );
+    }
+  }
+
+  _waitData(BuildContext context) async {
+    final resultData = await Navigator.push(
+        context, MaterialPageRoute(builder: (builder) => ListCarSelected()));
+    setState(() {
+      vehicle = resultData;
+    });
   }
 
   Widget _selected(BuildContext context) {
@@ -63,7 +135,8 @@ class _SelectCarState extends State<SelectCar> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _selectDate(widget.timeTogo, widget.timeReturn),
+            _selectDate(
+                timeTogo: widget.timeTogo, timeReturn: widget.timeReturn),
             _line(),
             _selectRoute(appState.locationController.text, title: 'Điểm đón'),
             _selectRoute(appState.destinationController.text,
@@ -82,7 +155,8 @@ class _SelectCarState extends State<SelectCar> {
   }
 }
 
-Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
+Widget _infoCar(
+    {String nameCar, int numberOfSeats, int price, double distance}) {
   TextStyle titleStyle = TextStyle(
       color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
   TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
@@ -97,7 +171,7 @@ Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
               style: titleStyle,
             )),
             Text(
-              nameCar,
+              nameCar != null ? nameCar : '',
               style: textStyle,
             ),
           ],
@@ -110,7 +184,20 @@ Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
               'Loại xe: ',
               style: titleStyle,
             )),
-            Text('${numberOfSeats.toInt()} chỗ', style: textStyle),
+            Text(numberOfSeats != null ? '${numberOfSeats.toInt()} chỗ' : '',
+                style: textStyle),
+          ],
+        ),
+        _line(),
+        Row(
+          children: <Widget>[
+            Expanded(
+                child: Text(
+              'Khoảng cách: ',
+              style: titleStyle,
+            )),
+            Text(price != null ? '${formatter(distance.toDouble())} km' : '',
+                style: textStyle),
           ],
         ),
         _line(),
@@ -121,7 +208,7 @@ Widget _infoCar({String nameCar, int numberOfSeats, int price}) {
               'Giá xe: ',
               style: titleStyle,
             )),
-            Text('${currencyFormatter(price.toInt())} đ', style: textStyle),
+            Text(price != null ? '${(price.toInt())} đ' : '', style: textStyle),
           ],
         )
       ],
@@ -137,7 +224,7 @@ Widget _line() {
   );
 }
 
-Widget _selectDate(String timeTogo, String timeReturn) {
+Widget _selectDate({String timeTogo, String timeReturn}) {
   TextStyle titleStyle = TextStyle(
       color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
   TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
@@ -196,7 +283,7 @@ Widget _selectRoute(String text, {String title = ''}) {
   );
 }
 
-Widget _imageCar({ImageProvider<dynamic> image}) {
+Widget _imageCar({String image, Function onPressed}) {
   return SizedBox(
     height: 200,
     child: image != null
@@ -204,13 +291,15 @@ Widget _imageCar({ImageProvider<dynamic> image}) {
             decoration: BoxDecoration(
                 color: Colors.blueGrey,
                 image: image != null
-                    ? DecorationImage(image: image, fit: BoxFit.cover)
+                    ? DecorationImage(
+                        image: NetworkImage(image), fit: BoxFit.cover)
                     : null),
           )
         : Container(
+            alignment: Alignment.center,
             child: FlatButton(
-              onPressed: () {},
-              child: Text('Chọn'),
+              onPressed: onPressed,
+              child: Text('Chọn Xe'),
             ),
           ),
   );
