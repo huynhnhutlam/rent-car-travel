@@ -1,17 +1,23 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
-import 'package:rent_car_travel/src/screen/vehicle/detailCar/detailCar_home_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rent_car_travel/src/screen/manage/vehicle/addCar.dart';
+import 'package:rent_car_travel/src/screen/manage/vehicle/updateCar.dart';
+class CarList extends StatefulWidget {
+  final String title;
 
-class VehicleList extends StatefulWidget {
+  CarList(this.title);
+
   @override
-  _VehicleListState createState() => _VehicleListState();
+  _CarListState createState() => _CarListState();
 }
 
-class _VehicleListState extends State<VehicleList> {
+class _CarListState extends State<CarList> {
   Future<List<Vehicle>> _getVehicle() async {
     var data = await http.get(ApiHttp.urlListVehicle);
     List<Vehicle> vehicles = new List<Vehicle>();
@@ -39,90 +45,116 @@ class _VehicleListState extends State<VehicleList> {
   }
 
   @override
-  void initState() {
-    _getVehicle();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[100],
-      child: FutureBuilder(
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.blue, fontSize: 18),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (builder) => AddCar() ));
+            },
+            child: Text(
+              'Thêm mới',
+              style: TextStyle(color: Colors.blue),
+            ),
+          )
+        ],
+      ),
+      body: FutureBuilder(
           future: _getVehicle(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return Center(child: CupertinoActivityIndicator());
             } else
-              return _listViewBuild(snapshot);
+              return _buildBody(snapshot);
           }),
     );
   }
 
-  ListView _listViewBuild(AsyncSnapshot snapshot) {
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: EdgeInsets.all(16),
-      physics: ScrollPhysics(),
-      itemCount: snapshot.data.length,
-      separatorBuilder: (context, index) {
-        return Container(
-          height: 12,
-        );
-      },
-      itemBuilder: (context, index) {
-        return _buildItemCar(context, snapshot, index);
-      },
+  Widget _buildBody(AsyncSnapshot snapshot) {
+    return Container(
+      child: ListView.separated(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(16),
+          itemBuilder: (context, index) {
+            return _itemCar(snapshot, index);
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 16);
+          },
+          itemCount: snapshot.data.length),
     );
   }
-}
 
-Widget _buildItemCar(BuildContext context, AsyncSnapshot snapshot, int index) {
-  var data = snapshot.data[index];
-  return InkWell(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailCar(
-            vehicle: data,
-          ),
+
+  Widget _itemCar(AsyncSnapshot snapshot, int index, {Function onLongPressed}) {
+    var data = snapshot.data[index];
+    return InkWell(
+      onTap: () {
+        print('asd');
+      },
+      child: Container(
+        padding: EdgeInsets.only(right: 8),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _imageCar(data.imageCar),
+            Expanded(
+              child: _buildInfoCar(data.nameCar, data.mode, data.numberOfSeats,
+                  data.description),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: _textStatus(data.status)),
+            PopupMenuButton<int>(
+              onSelected:(int value){
+                if(value == 1){
+                  Navigator.push(context, MaterialPageRoute(builder: (builder) => UpdateCar(vehicle: data,)));
+                }
+                if(value == 2){
+                  print('Xóa');
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 1,
+                  child: Text("Cập nhật"),
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  child: Text("Xóa"),
+                ),
+              ],
+            )
+          ],
         ),
-      );
-    },
-    child: Container(
-      padding: EdgeInsets.only(right: 8),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _imageCar(NetworkImage(data.imageCar)),
-          Expanded(
-            child: _buildInfoCar(
-                data.nameCar, data.mode, data.numberOfSeats, data.description),
-          ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: _textStatus(data.status))
-        ],
       ),
-    ),
-  );
+    );
+  }
+
 }
 
-Container _imageCar(ImageProvider<dynamic> image) {
+Container _imageCar(String image) {
   return Container(
     margin: EdgeInsets.only(right: 12),
-    width: 130,
-    height: 100,
+    width: 80,
+    height: 80,
     decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(blurRadius: 4, color: Colors.grey, offset: Offset(0, 1))
         ],
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(image: image, fit: BoxFit.cover)),
+        borderRadius: BorderRadius.circular(12)),
+    child: CachedNetworkImage(imageUrl: image, fit: BoxFit.fill,),
   );
 }
 

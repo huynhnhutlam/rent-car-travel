@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class _PopularVehicleState extends State<PopularVehicle> {
               future: _getVehicle(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.data == null) {
-                  return new Text('Loading...');
+                  return new Center(child: CupertinoActivityIndicator(),);
                 } else
                   return new ListView.builder(
                     shrinkWrap: true,

@@ -75,7 +75,10 @@ class _SelectDatePageState extends State<SelectDatePage> {
     final appState = Provider.of<AppState>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Date'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text('Chọn ngày', style: TextStyle(color: Colors.blue),),
       ),
       body: Container(
         child: _buildBody(

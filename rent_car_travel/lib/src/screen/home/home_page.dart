@@ -14,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +23,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
-        title: Text('HOME'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        actionsIconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        title: Text(
+          'Trang chủ',
+          style: TextStyle(color: Colors.blue, fontSize: 18),
+        ),
       ),
       body: SafeArea(
         child: Container(

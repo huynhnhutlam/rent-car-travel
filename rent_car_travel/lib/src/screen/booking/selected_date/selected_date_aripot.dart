@@ -60,7 +60,10 @@ class _SelectedDateState extends State<SelectedDate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chọn ngày'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text('Chọn ngày', style: TextStyle(color: Colors.blue, fontSize: 18),),
       ),
       body: Container(
         padding: EdgeInsets.all(16),

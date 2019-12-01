@@ -25,6 +25,7 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        centerTitle: true,
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text(widget.titleService, style: TextStyle(color: Colors.blue, fontSize: 18),),
         actions: <Widget>[

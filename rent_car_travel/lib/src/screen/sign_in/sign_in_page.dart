@@ -7,6 +7,7 @@ import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rent_car_travel/src/models/loginModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:rent_car_travel/src/screen/manage/home/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
@@ -103,8 +104,7 @@ class _SignInPageState extends State<SignInPage> {
       if (data['role_id'] == '1') {
         setState(() {
           savePref(email, name, id, roleId, avatar, phone, address, birthday);
-          print(
-              email + name + id + roleId + avatar + phone + address + birthday);
+          Navigator.push(context, MaterialPageRoute(builder: (build)=> HomPageManage()));
         });
       } else if (data['role_id'] == '2') {
         setState(() {

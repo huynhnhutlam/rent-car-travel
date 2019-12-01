@@ -42,8 +42,10 @@ class _ListCarSelectedState extends State<ListCarSelected> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách xe đang trống'),
-        automaticallyImplyLeading: true,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text('Danh sách xe đang trống', style: TextStyle(color: Colors.blue, fontSize: 18),),
       ),
       body: Container(
         child: FutureBuilder(

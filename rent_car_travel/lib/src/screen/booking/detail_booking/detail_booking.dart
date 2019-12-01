@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 String currencyFormatter(int n) {
 
   final formatter = new NumberFormat.currency(
@@ -52,7 +53,39 @@ class _DetailBookingState extends State<DetailBooking> {
       name = preferences.getString("name");
     });
   }
+  _booking() async{
+    final response = await http.post(ApiHttp.urlLogin, body: {
 
+    });
+  }
+  _check(){
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Đặt xe"),
+            content: Text(
+                'Bạn có muốn đặt xe!!.'
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('Quay lại'),
+              ),
+              FlatButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('Xác nhận'),
+              ),
+
+            ],
+          );
+        }
+    );
+  }
   @override
   void initState() {
     getPref();
@@ -64,9 +97,10 @@ class _DetailBookingState extends State<DetailBooking> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text(
-          'Confirm',
+          'Xác nhận',
           style: TextStyle(
             color: Colors.blue,
+            fontSize: 18
           ),
         ),
         centerTitle: true,
@@ -79,7 +113,9 @@ class _DetailBookingState extends State<DetailBooking> {
         ),
       ),
       bottomNavigationBar: Container(
-        child: _buildBottomButton(onPressed: () {}),
+        child: _buildBottomButton(onPressed: () {
+          _check();
+        }),
       ),
     );
   }
@@ -353,7 +389,6 @@ Widget _inputNote(TextEditingController controller) {
     child: TextField(
       controller: controller,
       maxLines: 4,
-      textInputAction: TextInputAction.done,
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(), border: OutlineInputBorder()),
     ),

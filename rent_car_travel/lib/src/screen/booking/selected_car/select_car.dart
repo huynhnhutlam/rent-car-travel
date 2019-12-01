@@ -41,7 +41,10 @@ class _SelectCarState extends State<SelectCar> {
     final appState = Provider.of<AppState>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chọn xe'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text('Chọn xe', style: TextStyle(color: Colors.blue, fontSize: 18),),
       ),
       body: SafeArea(
         child: Container(

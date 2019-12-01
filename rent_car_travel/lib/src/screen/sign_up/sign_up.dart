@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
       "email": controllerEmail.text,
     });
     final data = jsonDecode(response.body);
-    if(data['value'] == 202){
+    if(data['value'] == 200){
       showDialog(
           context: context,
         builder: (context){
@@ -48,25 +48,50 @@ class _SignUpPageState extends State<SignUpPage> {
         }
       );
     }
-    else {
+    else if(data["value"] == 404){
       showDialog(
           context: context,
           builder: (context){
             return AlertDialog(
               title: Text("Đăng kí"),
               content: Text(
-                  'Đăng kí thất bại!!Nhập lại.'
+                  'Tài khoản, mật khẩu hoặc mail không thể trống!!.'
               ),
               actions: <Widget>[
                 FlatButton(
                   onPressed: (){
                     Navigator.pop(context);
-                    controllerUser.text = '';
-                    controllerEmail.text = '';
-                    controllerPass.text = '';
-                    controllerReTypePass.text = '';
+                    controllerUser.clear();
+                    controllerEmail.clear();
+                    controllerPass.clear();
+                    controllerReTypePass.clear();
                   },
-                  child: Text('Xác nhận'),
+                  child: Text('Nhập lại'),
+                )
+              ],
+            );
+          }
+      );
+    }
+    else if(data["value"] == 400){
+      showDialog(
+          context: context,
+          builder: (context){
+            return AlertDialog(
+              title: Text("Đăng kí"),
+              content: Text(
+                  'Tài khoản đã tồn tại!!.'
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                    controllerUser.clear();
+                    controllerEmail.clear();
+                    controllerPass.clear();
+                    controllerReTypePass.clear();
+                  },
+                  child: Text('Nhập lại'),
                 )
               ],
             );
@@ -80,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Đăng nhập"),
+          title: Text("Đăng Kí"),
           content: new Row(
             children: [
               new CircularProgressIndicator(),
