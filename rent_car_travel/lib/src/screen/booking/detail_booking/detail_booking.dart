@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
+import 'package:rent_car_travel/src/constants/contants.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
+import 'package:rent_car_travel/src/screen/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-String currencyFormatter(int n) {
 
+String currencyFormatter(int n) {
   final formatter = new NumberFormat.currency(
     locale: 'vi',
     decimalDigits: 0,
@@ -19,7 +24,6 @@ String formatter(double n) {
   return f.format(n);
 }
 
-
 class DetailBooking extends StatefulWidget {
   final Vehicle vehicle;
   final String timeTogo;
@@ -27,7 +31,7 @@ class DetailBooking extends StatefulWidget {
   final String pickupPoint;
   final String dropPoint;
   final double distance;
-  final String service;
+  final Service service;
 
   @override
   _DetailBookingState createState() => _DetailBookingState();
@@ -44,53 +48,90 @@ class DetailBooking extends StatefulWidget {
 
 class _DetailBookingState extends State<DetailBooking> {
   TextEditingController _controller = TextEditingController();
-  String name = '', phone = '';
+  String name = '', phone = '', id = '';
 
   getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       phone = preferences.getString("phone");
       name = preferences.getString("name");
+      id = preferences.getString("id");
     });
   }
-  _booking() async{
-    final response = await http.post(ApiHttp.urlLogin, body: {
 
+  _booking() async {
+    final response = await http.post(ApiHttp.urlBooking, body: {
+      "user_id": id,
+      "vehicle_id": '${widget.vehicle.id}',
+      "start_date_booking": widget.timeTogo,
+      "end_date_booking":
+          widget.timeReturn == null ? widget.timeTogo : widget.timeReturn,
+      "pick_up_point": widget.pickupPoint,
+      "drop_point": widget.dropPoint,
+      "service_id": '${widget.service.id}',
+      "driver_id": '1',
+      "note": _controller.text,
+      "price": '${widget.vehicle.pricePerKm * widget.distance.toInt()}',
     });
+    final data = jsonDecode(response.body);
+    print(data.toString());
+    if (data['value'] == 200) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Đăng kí"),
+              content:
+                  Text('Đăng kí thành công!! Chuyển sang giao diện đăng nhập.'),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder) => HomePage()), (Route<dynamic> route) => false);
+                  },
+                  child: Text('Xác nhận'),
+                )
+              ],
+            );
+          });
+    }
   }
-  _check(){
+
+  _check() {
     showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
             title: Text("Đặt xe"),
-            content: Text(
-                'Bạn có muốn đặt xe!!.'
-            ),
+            content: Text('Bạn có muốn đặt xe!!.'),
             actions: <Widget>[
               FlatButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.pop(context);
                 },
                 child: Text('Quay lại'),
               ),
               FlatButton(
-                onPressed: (){
-                  Navigator.pop(context);
+                onPressed: () {
+                  new Future.delayed(new Duration(seconds: 3), () {
+                    //pop dialog
+                    _booking();
+                    Navigator.pop(context);
+                   
+                  });
                 },
                 child: Text('Xác nhận'),
               ),
-
             ],
           );
-        }
-    );
+        });
   }
+
   @override
   void initState() {
     getPref();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,10 +139,7 @@ class _DetailBookingState extends State<DetailBooking> {
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text(
           'Xác nhận',
-          style: TextStyle(
-            color: Colors.blue,
-            fontSize: 18
-          ),
+          style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -146,18 +184,16 @@ class _DetailBookingState extends State<DetailBooking> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-
           _selectCar(
               nameCar: widget.vehicle.nameCar,
               numberOfSeats: widget.vehicle.numberOfSeats,
-              service: widget.service,
+              service: widget.service.nameService,
               image: widget.vehicle.imageCar),
           _line(),
           _info(name, title: 'Tên khách hàng'),
           _line(),
           _info(phone, title: 'Số điện thoại'),
           _line(),
-
           _distance(widget.distance),
           _line(),
           _price(price: price),

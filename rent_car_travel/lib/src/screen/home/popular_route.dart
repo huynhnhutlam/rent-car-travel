@@ -51,7 +51,7 @@ class _PopularRouteState extends State<PopularRoute> {
             onTap: () {
               Navigator.pushNamed(context, Constants.route_list);
             },
-            text: 'Popular Route',
+            text: 'Tuyến đường phổ biến',
           ),
           new Container(
             height: 200,

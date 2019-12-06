@@ -7,29 +7,37 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/booking/booking.dart';
-import 'package:rent_car_travel/src/screen/manage/booking/detailBooking.dart';
 
-class BookingList extends StatefulWidget {
-  final String title;
+class HistoryBooking extends StatefulWidget {
+  final String userId;
+
+  const HistoryBooking({Key key, this.userId}) : super(key: key);
   @override
-  _BookingListState createState() => _BookingListState();
-
-  BookingList(this.title);
+  _HistoryBookingState createState() => _HistoryBookingState();
 }
 
-Future<List<Booking>> fetchBooking(http.Client client) async {
-  final response = await client.get(ApiHttp.urlListBooking);
+Future<List<Booking>> _getHistory(String userId) async {
+  final response = await http.post(ApiHttp.urlHistory, body: {
+    "user_id": userId,
+  });
 
-  return compute(parseRoutes, response.body);
+  final data = jsonDecode(response.body);
+  print(data);
+  return compute(parsePhotos, response.body);
 }
 
-List<Booking> parseRoutes(String responseBody) {
+List<Booking> parsePhotos(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Booking>((json) => Booking.fromJson(json)).toList();
 }
 
-class _BookingListState extends State<BookingList> {
+class _HistoryBookingState extends State<HistoryBooking> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,12 +48,12 @@ class _BookingListState extends State<BookingList> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
         title: Text(
-          'Đặt xe',
+          'Lịch sử',
           style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
       ),
       body: FutureBuilder(
-        future: fetchBooking(http.Client()),
+        future: _getHistory(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return Center(child: CupertinoActivityIndicator());
@@ -72,94 +80,47 @@ class _BookingListState extends State<BookingList> {
         );
       },
       itemBuilder: (context, index) {
-        return _buildItemBooking(context, snapshot, index);
+        return _buildItemHistory(context, snapshot, index);
       },
     );
   }
 }
 
-Widget _buildItemBooking(
+Widget _buildItemHistory(
     BuildContext context, AsyncSnapshot snapshot, int index) {
-  var data = snapshot.data[index];
-  return InkWell(
-    onTap: (){
-      Navigator.push(context, MaterialPageRoute(builder: (builder) => ConfirmBooking(booking: data,)));
-    },
-      child: Container(
-      child: Row(
-        children: <Widget>[
-          _image(data.imageService),
-          SizedBox(
-            width: 12,
-          ),
-          Expanded(
-            child: _info(data.nameService, data.nameVehicle, data.numberOfSeats,
-                data.dropPoint, data.startDate, data.endDate),
-                
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          Center(child: _status(data.status))
-        ],
-      ),
-    ),
+      print(snapshot.data[index].nameUser);
+      var data = snapshot.data[index];
+  return Container(
+    child: Row(
+      children: <Widget>[
+      _image(data.imageService),
+      SizedBox(width: 12,),
+      Expanded(child: _info(data.nameService,data.nameVehicle, data.numberOfSeats ,data.dropPoint, data.startDate, data.endDate),),
+      _status(data.status)
+    ],),
   );
 }
-
-Widget _image(String image) {
+Widget _image(String image){
   return ClipRRect(
     borderRadius: BorderRadius.circular(6),
-    child: CachedNetworkImage(
-      imageUrl: image,
-      height: 90,
-      width: 90,
-      fit: BoxFit.cover,
-    ),
+    child: CachedNetworkImage(imageUrl: image,height: 90, width: 90, fit: BoxFit.cover,),
   );
 }
-
-Widget _info(String service, String nameCar, int numberOfSeats, String route,
-    String timeGoto, String timeReturn) {
+Widget _info(String service,String nameCar, int numberOfSeats ,String route, String timeGoto, String timeReturn){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[
-      Text(
-        service,
-        style: TextStyle(
-            color: Color(0xFF737373),
-            fontSize: 14,
-            fontWeight: FontWeight.w500),
-      ),
-      SizedBox(
-        height: 8,
-      ),
-      Text('Xe: ' + nameCar + ' - ' + '${numberOfSeats.toInt()} chỗ',
-          style: TextStyle(
-            color: Color(0xFF737373),
-            fontSize: 14,
-          )),
-      SizedBox(
-        height: 8,
-      ),
-      Text('Điểm đến: ' + route,
-          style: TextStyle(
-            color: Color(0xFF737373),
-            fontSize: 14,
-          )),
-      SizedBox(
-        height: 8,
-      ),
-      Text('${timeGoto.toString()} - ${timeReturn.toString()}',
-          style: TextStyle(
-            color: Color(0xFF737373),
-            fontSize: 12,
-          ))
+      Text(service,style: TextStyle(color: Color(0xFF737373), fontSize: 14, fontWeight: FontWeight.w500),),
+      SizedBox(height: 8,),
+      Text('Xe: ' + nameCar + ' - '  + '${numberOfSeats.toInt()} chỗ',style: TextStyle(color: Color(0xFF737373), fontSize: 14,)),
+      SizedBox(height: 8,),
+      Text('Điểm đến: '+ route,style: TextStyle(color: Color(0xFF737373), fontSize: 14,)),
+      SizedBox(height: 8,),
+      Text('${timeGoto.toString()} - ${timeReturn.toString()}',style: TextStyle(color: Color(0xFF737373), fontSize: 12,))
     ],
   );
 }
-
 Widget _status(int status) {
   TextStyle statusStyle = TextStyle(
       fontWeight: FontWeight.bold,

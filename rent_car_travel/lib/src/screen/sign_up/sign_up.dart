@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
+import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
 import 'package:rent_car_travel/src/utils/line.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,8 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
               actions: <Widget>[
                 FlatButton(
                   onPressed: (){
-
-                    Navigator.pushNamed(context, Constants.signInScreen);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder) => SignInPage()), (Route<dynamic> route) => false);
                   },
                   child: Text('Xác nhận'),
                 )
@@ -109,6 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
           content: new Row(
             children: [
               new CircularProgressIndicator(),
+              SizedBox(width: 4,),
               new Text("Loading.."),
             ],
           ),
@@ -158,7 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
               textInputAction: TextInputAction.done,
               style: TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: 'Username',
+                hintText: 'Tài khoản',
                 prefixIcon: Icon(
                   Icons.account_circle,
                   size: 20,
@@ -197,7 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
               style: TextStyle(color: Colors.white),
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Password',
+                hintText: 'Mật khẩu',
                 prefixIcon: Icon(
                   FontAwesomeIcons.key,
                   size: 18,
@@ -217,7 +218,7 @@ class _SignUpPageState extends State<SignUpPage> {
               style: TextStyle(color: Colors.white),
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Confirm Password',
+                hintText: 'Nhập lại mật khẩu',
                 prefixIcon: Icon(
                   FontAwesomeIcons.key,
                   size: 18,
@@ -235,15 +236,15 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: () {
                 check();
               },
-              child: Text('Sign Up'),
+              child: Text('Đăng ký'),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: RichText(
               text: TextSpan(
-                  text: "Already Account ?? ",
-                  style: TextStyle(color: Color(0xff606470), fontSize: 16),
+                  text: "Đã có tài khoản ?? ",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                   children: <TextSpan>[
                     TextSpan(
                         recognizer: TapGestureRecognizer()
@@ -251,9 +252,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             Navigator.pushNamed(
                                 context, Constants.signInScreen);
                           },
-                        text: "Sign in now.",
+                        text: "Đăng nhập ngay.",
                         style:
-                            TextStyle(color: Color(0xffffffff), fontSize: 16))
+                            TextStyle(color: Colors.blue, fontSize: 16))
                   ]),
             ),
           ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_car/select_car.dart';
 
 class SelectedDate extends StatefulWidget {
   final String pickupPoint;
   final String dropPoint;
+  final Service service;
 
-  const SelectedDate({Key key, this.pickupPoint, this.dropPoint})
+  const SelectedDate({Key key, this.pickupPoint, this.dropPoint, this.service})
       : super(key: key);
 
   @override
@@ -132,6 +134,7 @@ class _SelectedDateState extends State<SelectedDate> {
                   DateFormat.M().format(_date) +
                   '/' +
                   DateFormat.y().format(_date) /*+ ' - ' + DateFormat.Hm().format(_date)*/,
+                  service: widget.service,
             )));
           },
           child: Text(

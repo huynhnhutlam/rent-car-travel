@@ -132,7 +132,7 @@ class _DetailCarState extends State<DetailCar>
           ),
         ),
       ),
-      bottomNavigationBar: Container(
+     /*  bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 4, color: Colors.grey)]),
@@ -144,7 +144,7 @@ class _DetailCarState extends State<DetailCar>
           onPressed: () {},
           child: Text('Booking Now',style: TextStyle(color: Colors.amber),),
         ),
-      ),
+      ), */
     );
   }
 

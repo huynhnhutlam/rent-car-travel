@@ -51,7 +51,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
           ),
         ),
       ),
-      bottomNavigationBar: Container(
+     /*  bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 4, color: Colors.grey)]),
@@ -62,7 +62,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
           onPressed: () {},
           child: Text('Selected'),
         ),
-      ),
+      ), */
     );
   }
 

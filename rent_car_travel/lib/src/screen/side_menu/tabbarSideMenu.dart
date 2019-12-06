@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/screen/profile/profile.dart';
 class TabbarSideMenu extends StatelessWidget {
   final String name;
 
@@ -42,14 +43,14 @@ class TabbarSideMenu extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[Text(name != '' ? 'Hi, ${name.toString()}' : 'Hi, name', style: TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold),)],
+                children: <Widget>[Text(name != '' ? 'Hi, ${name.toString()}' : 'Hi, user', style: TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold),)],
               ),
             ),
           ),
           Container(
             child: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (builder) => Profile()));
               },
               icon: Icon(
                 Icons.arrow_forward_ios,

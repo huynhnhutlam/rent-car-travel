@@ -238,10 +238,10 @@ Widget _textStatus(int status) {
         ],
         color: status == 1
             ? Colors.green
-            : status == 0 ? Colors.red : Colors.yellow,
+            : status == 3 ? Colors.grey : Colors.red,
         borderRadius: BorderRadius.circular(4)),
     child: Text(
-      status == 1 ? 'Open' : status == 0 ? 'Close' : 'Busy',
+      status == 1 ? 'Trống' : status == 3 ? 'Bảo trì' : 'Đã thuê',
       style: styleStatus,
     ),
   );

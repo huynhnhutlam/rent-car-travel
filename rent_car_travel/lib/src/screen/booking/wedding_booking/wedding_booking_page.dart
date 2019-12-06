@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_page.dart';
@@ -75,5 +77,7 @@ class WeddingBookingPage extends StatelessWidget {
     );
   }
 
-  void onPlaceSelected(PlaceItemRes place, bool fromAddress) {}
+  void onPlaceSelected(PlaceItemRes place, bool fromAddress, BuildContext context) {
+    Provider.of<AppState>(context).sendRequest(place.name);
+  }
 }

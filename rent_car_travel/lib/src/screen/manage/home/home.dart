@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rent_car_travel/src/screen/manage/booking/booking.dart';
 import 'package:rent_car_travel/src/screen/manage/route/route.dart';
 import 'package:rent_car_travel/src/screen/manage/vehicle/vehicle.dart';
-import 'package:rent_car_travel/src/screen/side_menu/side_menu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class HomPageManage extends StatefulWidget {
@@ -14,15 +13,13 @@ class _HomPageManageState extends State<HomPageManage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: Builder(
-          builder: (context) => SideMenu(),
-        ),
-      ),
+     
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
         actionsIconTheme: IconThemeData(color: Colors.blue),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text(
           'Trang chủ',
           style: TextStyle(color: Colors.blue, fontSize: 18),
@@ -125,5 +122,6 @@ List home = [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS33uA8P_kF66jRxKuGDqmHrz_U1Z43OuSExXbkCXAEDhDS2Nkq",
     "title": "Cài đặt"
   },
-  {"id": 5, "image": "", "title": "Thoát"},
 ];
+
+ /*  {"id": 5, "image": "", "title": "Thoát"}, */

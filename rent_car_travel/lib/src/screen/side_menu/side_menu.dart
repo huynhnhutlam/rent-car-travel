@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
+import 'package:rent_car_travel/src/screen/history/history.dart';
 import 'package:rent_car_travel/src/screen/side_menu/tabbarSideMenu.dart';
+import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SideMenu extends StatefulWidget {
@@ -10,28 +12,29 @@ class SideMenu extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenu> {
-  String name = '', avatar = '';
+  String name = '', avatar = '', userId;
 
   getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       avatar = preferences.getString("avatar");
       name = preferences.getString("name");
+      userId =  preferences.getString("id");
     });
   }
   signOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      /*preferences.setString("name", null);
+      preferences.setString("name", null);
       preferences.setString("email", null);
       preferences.setString("id", null);
       preferences.setString("role_id", null);
       preferences.setString("avatar", null);
       preferences.setString("phone", null);
       preferences.setString("address", null);
-      preferences.setString("birthday", null);*/
+      preferences.setString("birthday", null);
       preferences.commit();
-      Navigator.pop(context);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (builder) => SignInPage()), (Route<dynamic> route) => false);
     });
   }
 
@@ -46,7 +49,7 @@ class _SideMenuState extends State<SideMenu> {
     return SafeArea(
       child: Container(
           child: ListView(
-        children: <Widget>[TabbarSideMenu(name, avatar), MenuItem(signOut)],
+        children: <Widget>[TabbarSideMenu(name, avatar), MenuItem(signOut,userId)],
       )),
     );
   }
@@ -54,8 +57,8 @@ class _SideMenuState extends State<SideMenu> {
 
 class MenuItem extends StatefulWidget {
   final VoidCallback signOut;
-
-  MenuItem(this.signOut);
+  final String userId;
+  MenuItem(this.signOut, this.userId);
 
   @override
   _MenuItemState createState() => _MenuItemState();
@@ -84,8 +87,7 @@ class _MenuItemState extends State<MenuItem> {
             },
           ),
           ListTile(
-            leading: SvgPicture.asset(
-              'lib/res/icon/vehicle.svg',
+            leading: SvgPicture.asset('lib/res/icon/vehicle.svg',
               width: 24,
               height: 24,
               color: Colors.amber,
@@ -105,6 +107,18 @@ class _MenuItemState extends State<MenuItem> {
             title: Text('Tuyến đường', style: styleTitle),
             onTap: () {
               Navigator.pushNamed(context, Constants.route_list);
+            },
+          ),
+           ListTile(
+            leading: SvgPicture.asset(
+              'lib/res/icon/service.svg',
+              width: 24,
+              height: 24,
+              color: Colors.blue,
+            ),
+            title: Text('Lịch sử', style: styleTitle),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (builder) => HistoryBooking(userId: widget.userId,)));
             },
           ),
           ListTile(

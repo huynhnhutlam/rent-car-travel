@@ -39,7 +39,7 @@ class _ServiceRecommendState extends State<ServiceRecommend> {
         children: <Widget>[
           TitleHome(
             onTap: () {},
-            text: 'Select Service',
+            text: 'Chọn dịch vụ',
             txtSeemore: '',
           ),
           new Container(
@@ -76,13 +76,13 @@ Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
   return GestureDetector(
     onTap: () {
       if (index == 0) {
-        Navigator.pushNamed(context, Constants.travel_booking, arguments: data.nameService);
+        Navigator.pushNamed(context, Constants.travel_booking, arguments: data);
       }
       if (index == 1) {
-        Navigator.pushNamed(context, Constants.airport_booking, arguments: data.nameService);
+        Navigator.pushNamed(context, Constants.airport_booking, arguments: data);
       }
       if (index == 2) {
-        Navigator.pushNamed(context, Constants.wedding_booking,arguments: data.nameService);
+        Navigator.pushNamed(context, Constants.wedding_booking,arguments: data);
       }
     },
     child: Container(

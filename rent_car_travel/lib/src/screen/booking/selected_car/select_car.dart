@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:rent_car_travel/src/screen/booking/detail_booking/detail_booking.dart';
 
@@ -10,8 +11,9 @@ import 'list_car.dart';
 class SelectCar extends StatefulWidget {
   final String timeTogo;
   final String timeReturn;
+  final Service service;
 
-  SelectCar({this.timeTogo, this.timeReturn});
+  SelectCar({this.timeTogo, this.timeReturn, this.service});
 
   @override
   _SelectCarState createState() => _SelectCarState();
@@ -116,7 +118,7 @@ class _SelectCarState extends State<SelectCar> {
             timeReturn: widget.timeReturn,
             timeTogo: widget.timeTogo,
             vehicle: vehicle,
-            service: 'Đi sân bay',
+            service: widget.service,
           ),
         ),
       );

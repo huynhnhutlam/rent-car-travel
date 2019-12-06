@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/ariport_booking/selected_route/selectedRoute.dart';
 
 import 'package:provider/provider.dart';
@@ -9,9 +10,9 @@ import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_aripot.dart';
 
 class AirportBookingPage extends StatefulWidget {
-  final String titleService;
+  final Service service;
 
-  AirportBookingPage({this.titleService});
+  AirportBookingPage({this.service});
 
   @override
   _AirportBookingPageState createState() => _AirportBookingPageState();
@@ -27,7 +28,7 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
         backgroundColor: Colors.white,
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.blue),
-        title: Text(widget.titleService, style: TextStyle(color: Colors.blue, fontSize: 18),),
+        title: Text(widget.service.nameService, style: TextStyle(color: Colors.blue, fontSize: 18),),
         actions: <Widget>[
           Center(
               child: InkWell(
@@ -54,6 +55,7 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
                                   pickupPoint: appState.locationController.text,
                                   dropPoint:
                                       appState.destinationController.text,
+                                      service: widget.service,
                                 )));
                   }))
         ],

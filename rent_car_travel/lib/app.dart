@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> {
       case Constants.airport_booking:
         return new MaterialPageRoute(
             builder: (context) => AirportBookingPage(
-              titleService: settings.arguments,
+              service: settings.arguments,
             ));
       case Constants.travel_booking:
         return new MaterialPageRoute(builder: (context) => TravelBookingPage(

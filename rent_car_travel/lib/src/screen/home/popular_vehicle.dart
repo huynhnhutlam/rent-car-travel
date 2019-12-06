@@ -16,7 +16,7 @@ class PopularVehicle extends StatefulWidget {
 
 class _PopularVehicleState extends State<PopularVehicle> {
   Future<List<Vehicle>> _getVehicle() async {
-    var data = await http.get(ApiHttp.urlListVehicle);
+    var data = await http.get(ApiHttp.urlListVehicleOpen);
     List<Vehicle> vehicles = new List<Vehicle>();
     if (data.statusCode == 200) {
       var jsonData = json.decode(data.body) as List;
@@ -50,7 +50,7 @@ class _PopularVehicleState extends State<PopularVehicle> {
             onTap: () {
               Navigator.pushNamed(context, Constants.vehicle_list);
             },
-            text: 'Popular Vehicle',
+            text: 'Xe phổ biến',
           ),
           new Container(
             height: 250,
@@ -58,12 +58,15 @@ class _PopularVehicleState extends State<PopularVehicle> {
               future: _getVehicle(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.data == null) {
-                  return new Center(child: CupertinoActivityIndicator(),);
+                  return new Center(
+                    child: CupertinoActivityIndicator(),
+                  );
                 } else
                   return new ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data.length,
+                    itemCount:
+                        snapshot.data.length > 4 ? 4 : snapshot.data.length,
                     itemBuilder: (context, index) {
                       return _singlePopularVehicle(context, snapshot, index);
                     },
@@ -111,10 +114,11 @@ Widget _singlePopularVehicle(
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: 150.0,
-              decoration: new BoxDecoration(
-
+              decoration: new BoxDecoration(),
+              child: CachedNetworkImage(
+                imageUrl: data.imageCar,
+                fit: BoxFit.fill,
               ),
-              child: CachedNetworkImage(imageUrl: data.imageCar, fit: BoxFit.fill,),
             ),
           ),
           Expanded(
@@ -138,12 +142,13 @@ Widget _singlePopularVehicle(
                                 color: Colors.green)),
                         Text(
                           data.status == 1
-                              ? 'Open'
-                              : data.status == 2 ? 'Close' : 'Busy',
+                              ? 'Trống'
+                              : data.status == 2 ? 'Đã thuê' : 'Bảo trì',
                           style: TextStyle(
+                            fontWeight: FontWeight.bold,
                             color: data.status == 1
                                 ? Colors.green
-                                : data.status == 0 ? Colors.red : Colors.yellow,
+                                : data.status == 2 ? Colors.red : Colors.grey,
                           ),
                         )
                       ],

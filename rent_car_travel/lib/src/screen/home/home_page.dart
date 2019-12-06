@@ -43,7 +43,6 @@ class _HomePageState extends State<HomePage> {
                   height: 30,
                 ),
                 //NewestCar
-                NewestCar(),
                 ServiceRecommend(),
                 //Popular Vehicle
                 Container(
@@ -61,7 +60,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBar(),
     );
   }
 }

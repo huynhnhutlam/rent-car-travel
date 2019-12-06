@@ -69,7 +69,7 @@ class _SignInPageState extends State<SignInPage> {
       "password": _passwordController.text,
     });
     final data = jsonDecode(response.body);
-    String name = data['name'];
+    String name = data['name_user'];
     String email = data['email'];
     String id = data['user_id'];
     String roleId = data['role_id'];
@@ -104,14 +104,18 @@ class _SignInPageState extends State<SignInPage> {
       if (data['role_id'] == '1') {
         setState(() {
           savePref(email, name, id, roleId, avatar, phone, address, birthday);
-          Navigator.push(context, MaterialPageRoute(builder: (build)=> HomPageManage()));
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (build) => HomPageManage()),
+              (Route<dynamic> route) => false);
         });
       } else if (data['role_id'] == '2') {
         setState(() {
           _loginStatus = LoginStatus.signIn;
           savePref(email, name, id, roleId, avatar, phone, address, birthday);
         });
-        Navigator.pushNamed(context, Constants.homeScreen);
+        Navigator.pushNamedAndRemoveUntil(
+            context, Constants.homeScreen, (Route<dynamic> route) => false);
       }
     }
   }
@@ -162,7 +166,7 @@ class _SignInPageState extends State<SignInPage> {
                       check();
                     }
                   : null,
-              child: Text('Sign In', style: style),
+              child: Text('Đăng nhập', style: style),
             ));
       },
     );
@@ -174,7 +178,7 @@ class _SignInPageState extends State<SignInPage> {
           controller: _usernameController,
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: 'Username',
+            hintText: 'Tài khoản',
             hintStyle: style,
             border: InputBorder.none,
             errorText: snapshot.data,
@@ -198,8 +202,9 @@ class _SignInPageState extends State<SignInPage> {
             check();
           },
           decoration: InputDecoration(
-              hintText: 'Password',
+              hintText: 'Mật khẩu',
               hintStyle: style,
+              filled: true,
               border: InputBorder.none,
               errorText: snapshot.data,
               prefixIcon: Icon(
@@ -252,7 +257,12 @@ class _SignInPageState extends State<SignInPage> {
                           textPassword,
                           InkWell(
                             onTap: () {},
-                            child: Text('Forgot Password'),
+                            child: Text(
+                              'Quên mật khẩu',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontStyle: FontStyle.italic),
+                            ),
                           )
                         ],
                       ),
@@ -262,9 +272,8 @@ class _SignInPageState extends State<SignInPage> {
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                       child: RichText(
                         text: TextSpan(
-                            text: "Don't Account ?? ",
-                            style: TextStyle(
-                                color: Color(0xff606470), fontSize: 16),
+                            text: "Không có tài khoản ?? ",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
                             children: <TextSpan>[
                               TextSpan(
                                   recognizer: TapGestureRecognizer()
@@ -272,9 +281,9 @@ class _SignInPageState extends State<SignInPage> {
                                       Navigator.pushNamed(
                                           context, Constants.signUpScreen);
                                     },
-                                  text: "Sign up for a new account",
+                                  text: "Đăng ký ngay",
                                   style: TextStyle(
-                                      color: Color(0xffffffff), fontSize: 16))
+                                      color: Colors.blue, fontSize: 16))
                             ]),
                       ),
                     ),
@@ -302,7 +311,7 @@ class _SignInPageState extends State<SignInPage> {
                           Padding(
                             padding: EdgeInsets.only(left: 15.0, right: 15.0),
                             child: Text(
-                              "Or",
+                              "Hoặc",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16.0,
