@@ -15,7 +15,8 @@ class HistoryBooking extends StatefulWidget {
   @override
   _HistoryBookingState createState() => _HistoryBookingState();
 }
-
+enum HistoryStatus {empty, notEmpty}
+HistoryStatus historyStatus ;
 Future<List<Booking>> _getHistory(String userId) async {
   final response = await http.post(ApiHttp.urlHistory, body: {
     "user_id": userId,
@@ -23,6 +24,7 @@ Future<List<Booking>> _getHistory(String userId) async {
 
   final data = jsonDecode(response.body);
   print(data);
+  
   return compute(parsePhotos, response.body);
 }
 

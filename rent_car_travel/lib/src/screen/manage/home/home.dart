@@ -13,7 +13,6 @@ class _HomPageManageState extends State<HomPageManage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
@@ -39,22 +38,34 @@ class _HomPageManageState extends State<HomPageManage> {
           return GestureDetector(
             onTap: () {
               if (home[index]['id'] == 1) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => BookingList(home[index]['title'])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            BookingList(home[index]['title'])));
               }
               if (home[index]['id'] == 2) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => CarList(home[index]['title'])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => CarList(home[index]['title'])));
               }
               if (home[index]['id'] == 3) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => RouteList(home[index]['title'])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => RouteList(home[index]['title'])));
               }
               if (home[index]['id'] == 4) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => BookingList(home[index]['title'])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            BookingList(home[index]['title'])));
               }
-              if (home[index]['id'] == 5) {}
+              if (home[index]['id'] == 5) {
+                
+              }
             },
             child: _itemGrid(home[index]['title'], home[index]['image']),
           );
@@ -122,6 +133,5 @@ List home = [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS33uA8P_kF66jRxKuGDqmHrz_U1Z43OuSExXbkCXAEDhDS2Nkq",
     "title": "Cài đặt"
   },
+  {"id": 5, "image": "https://png.pngtree.com/png-vector/20190225/ourlarge/pngtree-vector-logout-icon-png-image_702463.jpg", "title": "Thoát"},
 ];
-
- /*  {"id": 5, "image": "", "title": "Thoát"}, */

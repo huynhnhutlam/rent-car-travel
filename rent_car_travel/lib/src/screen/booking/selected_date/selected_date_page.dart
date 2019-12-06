@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_car/select_car.dart';
 import 'package:intl/intl.dart';
 
 class SelectDatePage extends StatefulWidget {
+  final Service service;
+
+  const SelectDatePage({Key key, this.service}) : super(key: key);
   @override
   _SelectDatePageState createState() => _SelectDatePageState();
 }
@@ -104,6 +108,7 @@ class _SelectDatePageState extends State<SelectDatePage> {
                   DateFormat.M().format(_dateReturn) +
                   '/' +
                   DateFormat.y().format(_dateReturn)/*+ ' - ' + DateFormat.Hm().format(_dateReturn)*/,
+                  service: widget.service,
             )));
           },
           child: Text(

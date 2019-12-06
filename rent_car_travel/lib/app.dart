@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
       case Constants.wedding_booking:
         return new MaterialPageRoute(
             builder: (context) => WeddingBookingPage(
-              titleService: settings.arguments,
+              service: settings.arguments,
             ));
       case Constants.select_date:
         return new MaterialPageRoute(builder: (context) => SelectDatePage());

@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/booking/booking.dart';
 import 'package:http/http.dart' as http;
+import 'package:rent_car_travel/src/screen/manage/home/home.dart';
+
 String currencyFormatter(int n) {
   final formatter = new NumberFormat.currency(
     locale: 'vi',
@@ -27,28 +31,160 @@ class ConfirmBooking extends StatefulWidget {
 
 class _ConfirmBookingState extends State<ConfirmBooking> {
   TextEditingController _controller = TextEditingController();
-  
+
   _confirm() async {
-    final response = await http.post(ApiHttp.urlLogin, body: {
+    final response = await http.post(ApiHttp.urlConfirm, body: {
       "id": '${widget.booking.id}',
       "status_vehicle": '2',
       "status_booking": '2'
     });
+    final data = jsonDecode(response.body);
+    if (data['valuse'] == 200) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Thông báo"),
+            content: Text('Thành công. Về trang chủ'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (builder) => HomPageManage()),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text('Xác nhận'),
+              )
+            ],
+          );
+        },
+      );
+    }
   }
+
   _cancel() async {
-    final response = await http.post(ApiHttp.urlLogin, body: {
+    final response = await http.post(ApiHttp.urlConfirm, body: {
       "id": '${widget.booking.id}',
       "status_vehicle": '1',
       "status_booking": '3'
     });
+    final data = jsonDecode(response.body);
+    if (data['value'] == 200) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Thông báo"),
+            content: Text('Thành công. Về trang chủ'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (builder) => HomPageManage()),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text('Xác nhận'),
+              )
+            ],
+          );
+        },
+      );
+    }
   }
+
   _completed() async {
-    final response = await http.post(ApiHttp.urlLogin, body: {
+    final response = await http.post(ApiHttp.urlConfirm, body: {
       "id": '${widget.booking.id}',
       "status_vehicle": '1',
       "status_booking": '4'
     });
+    final data = jsonDecode(response.body);
+    if (data['value'] == 200) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Thông báo"),
+            content: Text('Thành công. Về trang chủ'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (builder) => HomPageManage()),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text('Xác nhận'),
+              )
+            ],
+          );
+        },
+      );
+    }
   }
+
+  _check(String title, {Function onPressed}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Row(
+              children: <Widget>[
+                Icon(Icons.check, color: Colors.green, size: 24),
+                SizedBox(width: 4),
+                Text("Thông báo"),
+              ],
+            ),
+            content: Text(title),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Quay lại'),
+              ),
+              FlatButton(
+                onPressed: onPressed,
+                child: Text('Xác nhận'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _cancelBooking(String title, {Function onPressed}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Row(
+              children: <Widget>[
+                Icon(Icons.warning, color: Colors.red, size: 24),
+                SizedBox(
+                  width: 4,
+                ),
+                Text("Thông báo"),
+              ],
+            ),
+            content: Text(title),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Quay lại'),
+              ),
+              FlatButton(
+                onPressed: onPressed,
+                child: Text('Xác nhận'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,16 +211,44 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
         Center(
           child: widget.booking.status == 1
               ? Row(
-                mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    _buildButtonCancel(onPressed: () {}),
-                    
-                    _buildButtonConfirm(onPressed: () {}),
+                    _buildButtonCancel(onPressed: () {
+                      _cancelBooking('Xác nhận hủy chuyến xe của khách hàng!!.',
+                          onPressed: () {
+                        new Future.delayed(new Duration(seconds: 3), () {
+                          //pop dialog
+                          _cancel();
+                          Navigator.pop(context);
+                        });
+                      });
+                    }),
+                    _buildButtonConfirm(onPressed: () {
+                      _check('Xác nhận chuyến xe đến khách hàng!!.',
+                          onPressed: () {
+                        new Future.delayed(new Duration(seconds: 3), () {
+                          //pop dialog
+                          _confirm();
+                          Navigator.pop(context);
+                        });
+                      });
+                    }),
                   ],
                 )
               : widget.booking.status == 2
-                  ? _buildButtonCompleted(onPressed: () {})
-                  : _buildButtonBack(onPressed: () {}),
+                  ? _buildButtonCompleted(onPressed: () {
+                      _check('Hoàn thành chuyến xe cho khách hàng!!.',
+                          onPressed: () {
+                        new Future.delayed(new Duration(seconds: 3), () {
+                          //pop dialog
+                          _completed();
+                          Navigator.pop(context);
+                        });
+                      });
+                    })
+                  : _buildButtonBack(onPressed: () {
+                      Navigator.pop(context);
+                    }),
         )
       ],
     ));

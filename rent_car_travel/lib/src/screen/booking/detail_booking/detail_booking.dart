@@ -74,25 +74,27 @@ class _DetailBookingState extends State<DetailBooking> {
       "price": '${widget.vehicle.pricePerKm * widget.distance.toInt()}',
     });
     final data = jsonDecode(response.body);
-    print(data.toString());
     if (data['value'] == 200) {
       showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Đăng kí"),
-              content:
-                  Text('Đăng kí thành công!! Chuyển sang giao diện đăng nhập.'),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder) => HomePage()), (Route<dynamic> route) => false);
-                  },
-                  child: Text('Xác nhận'),
-                )
-              ],
-            );
-          });
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Thông báo"),
+            content: Text('Đặt xe thành công. Về trang chủ.'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (builder) => HomePage()),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text('Xác nhận'),
+              )
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -101,7 +103,7 @@ class _DetailBookingState extends State<DetailBooking> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Đặt xe"),
+            title: Text("Thông báo"),
             content: Text('Bạn có muốn đặt xe!!.'),
             actions: <Widget>[
               FlatButton(
@@ -116,7 +118,6 @@ class _DetailBookingState extends State<DetailBooking> {
                     //pop dialog
                     _booking();
                     Navigator.pop(context);
-                   
                   });
                 },
                 child: Text('Xác nhận'),

@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_page.dart';
 import 'package:rent_car_travel/src/screen/booking/wedding_booking/selected_route/selectedRoute.dart';
 
 class WeddingBookingPage extends StatelessWidget {
-  final String titleService;
+  final Service service;
 
-  WeddingBookingPage({this.titleService});
+  WeddingBookingPage({this.service});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class WeddingBookingPage extends StatelessWidget {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text(
-          titleService,
+          service.nameService,
           style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
         centerTitle: true,
@@ -65,7 +66,7 @@ class WeddingBookingPage extends StatelessWidget {
           color: Colors.blueAccent,
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (builder) {
-              return SelectDatePage();
+              return SelectDatePage(service: service,);
             }));
           },
           child: Text(

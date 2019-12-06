@@ -206,10 +206,10 @@ Widget _textStatus(int status) {
         ],
         color: status == 1
             ? Colors.green
-            : status == 2 ? Colors.red : Colors.grey,
+            : status == 2 ? Colors.red : status == 3 ? Colors.grey : Colors.amber,
         borderRadius: BorderRadius.circular(4)),
     child: Text(
-      status == 1 ? 'Trống' : status == 2 ? 'Đã thuê' : 'Bảo trì',
+      status == 1 ? 'Trống' : status == 2 ? 'Đã thuê' : status == 4 ? 'Đang chờ': 'Bảo trì',
       style: styleStatus,
     ),
   );

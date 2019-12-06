@@ -144,6 +144,7 @@ class AppState with ChangeNotifier {
     destinationController.text = intendedLocation;
     String route = await _googleMapsServices.getRouteCoordinates(
         _initialPosition, destination);
+        _lastPosition = destination;
     createRoute(route);
     notifyListeners();
   }
