@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/screen/profile/profile.dart';
 class TabbarSideMenu extends StatelessWidget {
+  final String name;
+
+  TabbarSideMenu(this.name, this.avatar);
+
+  final String avatar;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,10 +29,11 @@ class TabbarSideMenu extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              color: Colors.white,
               image: DecorationImage(
                 fit: BoxFit.fill,
                 image: NetworkImage(
-                    "https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg"),
+                    avatar == '' ? 'https://t4.ftcdn.net/jpg/02/68/29/79/500_F_268297980_bleTmBMJomIyWLanB4HrLpnDoEh4vboM.jpg': avatar),
               ),
             ),
           ),
@@ -35,14 +43,14 @@ class TabbarSideMenu extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[Text('Lâm')],
+                children: <Widget>[Text(name != '' ? 'Hi, ${name.toString()}' : 'Hi, user', style: TextStyle(color: Colors.amber, fontSize: 16, fontWeight: FontWeight.bold),)],
               ),
             ),
           ),
           Container(
             child: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (builder) => Profile()));
               },
               icon: Icon(
                 Icons.arrow_forward_ios,

@@ -29,7 +29,9 @@ class AppState with ChangeNotifier {
   Set<Marker> get markers => _markers;
 
   Set<Polyline> get polyLines => _polyLines;
+
   var distanceKm = NumberFormat('###.0', 'vi');
+
   AppState() {
     _getUserLocation();
   }
@@ -142,6 +144,7 @@ class AppState with ChangeNotifier {
     destinationController.text = intendedLocation;
     String route = await _googleMapsServices.getRouteCoordinates(
         _initialPosition, destination);
+        _lastPosition = destination;
     createRoute(route);
     notifyListeners();
   }

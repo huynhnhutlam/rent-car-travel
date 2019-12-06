@@ -26,6 +26,7 @@ List<BannerImage> parseBanner(String responseBody) {
 
   return parsed.map<BannerImage>((json) => BannerImage.fromJson(json)).toList();
 }
+
 class BannerVehicle extends StatefulWidget {
   @override
   _BannerVehicleState createState() => _BannerVehicleState();

@@ -19,7 +19,7 @@ class Detail extends StatelessWidget {
         shrinkWrap: true,
         padding: EdgeInsets.all(16),
         children: <Widget>[
-          _textTitle('Detail'),
+          _textTitle('Chi tiết'),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8,vertical: 12),
             child: _rowDetail(),
@@ -33,21 +33,21 @@ class Detail extends StatelessWidget {
                 Expanded(
                   child: Container(
                     margin: EdgeInsets.only(right: 12),
-                    child: _detailInfo('${data.mode}', 'Mode: ',
+                    child: _detailInfo('${data.mode}', 'Cơ chế: ',
                         icon: Icon(Icons.description, size: 18),
                         style: TextStyle(color: colorText, fontSize: sizeText)),
                   ),
                 ),
                 Expanded(
                   child: _detailInfo(
-                    data.status == 0
+                    data.status == 1
                         ? 'Open'
-                        : data.status == 1 ? 'Closed' : 'Busy',
-                    'Status: ',
+                        : data.status == 2 ? 'Closed' : 'Busy',
+                    'Trạng thái: ',
                     style: TextStyle(
-                        color: data.status == 0
+                        color: data.status == 1
                             ? Colors.green
-                            : data.status == 1 ? Colors.red: Colors.amber,
+                            : data.status == 2 ? Colors.red: Colors.amber,
                         fontSize: sizeText),
                     icon: Icon(Icons.help_outline, size: 18),
                   ),
@@ -61,10 +61,7 @@ class Detail extends StatelessWidget {
             child: _description(context,data.description),
           ),
           line(),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0,8,0,8),
-            child: _textTitle('Recommendation'),
-          ),
+          
         ],
       ),
     );
@@ -77,7 +74,7 @@ class Detail extends StatelessWidget {
         Expanded(
           child: Container(
             margin: EdgeInsets.only(right: 12),
-            child: _detailInfo('${data.numberOfSeats.toInt()}', 'Seats: ',
+            child: _detailInfo('${data.numberOfSeats.toInt()}', 'Chỗ ngồi: ',
                 icon: Icon(Icons.airline_seat_recline_extra, size: 18),
                 style: TextStyle(color: colorText, fontSize: sizeText)),
           ),
@@ -85,7 +82,7 @@ class Detail extends StatelessWidget {
         Expanded(
           child: _detailInfo(
             '${data.licensePlates}',
-            'Lincense: ',
+            'Biển số: ',
             style: TextStyle(color: colorText, fontSize: sizeText),
             icon: Icon(Icons.format_line_spacing, size: 18),
           ),
@@ -100,7 +97,7 @@ Widget _description(BuildContext context, String description) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _textTitle('Description'),
+        _textTitle('Mô tả'),
         Container(
           padding: EdgeInsets.all(10),
           child: Text(

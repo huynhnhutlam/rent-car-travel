@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/services.dart';
 import 'dart:convert';
@@ -15,13 +16,13 @@ class ServiceRecommend extends StatefulWidget {
 class _ServiceRecommendState extends State<ServiceRecommend> {
   Future<List<Service>> _getService() async {
     var data = await http
-        .get("http://www.json-generator.com/api/json/get/bPTCkMawVu?indent=2");
+        .get(ApiHttp.urlListService);
     var jsonData = json.decode(data.body) as List;
     List<Service> services = new List<Service>();
     for (var obj in jsonData) {
       Service service = Service(
         id: obj["id"],
-        nameService: obj["nameService"],
+        nameService: obj["name"],
         image: obj["image"],
         description: obj["description"],
       );
@@ -38,7 +39,7 @@ class _ServiceRecommendState extends State<ServiceRecommend> {
         children: <Widget>[
           TitleHome(
             onTap: () {},
-            text: 'Select Service',
+            text: 'Chọn dịch vụ',
             txtSeemore: '',
           ),
           new Container(
@@ -75,13 +76,13 @@ Widget _singleService(BuildContext context, AsyncSnapshot snapshot, int index) {
   return GestureDetector(
     onTap: () {
       if (index == 0) {
-        Navigator.pushNamed(context, Constants.travel_booking);
+        Navigator.pushNamed(context, Constants.travel_booking, arguments: data);
       }
       if (index == 1) {
-        Navigator.pushNamed(context, Constants.airport_booking);
+        Navigator.pushNamed(context, Constants.airport_booking, arguments: data);
       }
       if (index == 2) {
-        Navigator.pushNamed(context, Constants.wedding_booking);
+        Navigator.pushNamed(context, Constants.wedding_booking,arguments: data);
       }
     },
     child: Container(

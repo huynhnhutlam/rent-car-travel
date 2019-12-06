@@ -8,7 +8,7 @@ import 'package:rent_car_travel/src/screen/widget/title_home.dart';
 import 'package:geolocator/geolocator.dart';
 
 class SelectRouteWedding extends StatefulWidget {
-  final Function(PlaceItemRes, bool) onSelected;
+  final Function(PlaceItemRes, bool, BuildContext) onSelected;
 
   SelectRouteWedding({Key key, this.onSelected}) : super(key: key);
 
@@ -196,7 +196,7 @@ class _SelectRouteWeddingState extends State<SelectRouteWedding> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PlacePickerPage(
                 fromAddress == null ? "" : fromAddress.name, (place, isFrom) {
-              widget.onSelected(place, isFrom);
+              widget.onSelected(place, isFrom, context);
               fromAddress = place;
               setState(() {});
             }, true)));
@@ -206,7 +206,7 @@ class _SelectRouteWeddingState extends State<SelectRouteWedding> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PlacePickerPage(
                 toAddress == null ? "" : toAddress.name, (place, isFrom) {
-              widget.onSelected(place, isFrom);
+              widget.onSelected(place, isFrom,context);
               toAddress = place;
               setState(() {});
             }, false)));

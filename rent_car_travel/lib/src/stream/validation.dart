@@ -3,7 +3,7 @@ class Validation {
     if (password == null) {
       return "Password Invalid.";
     }
-    if (password.length <= 6) {
+    if (password.length <= 0) {
       return "Password Require minimum 6 character.";
     }
     return null;

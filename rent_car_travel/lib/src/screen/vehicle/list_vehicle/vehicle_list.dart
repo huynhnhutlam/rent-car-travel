@@ -52,7 +52,7 @@ class _VehicleListState extends State<VehicleList> {
           future: _getVehicle(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
-              return CupertinoActivityIndicator();
+              return Center(child: CupertinoActivityIndicator());
             } else
               return _listViewBuild(snapshot);
           }),
@@ -206,10 +206,10 @@ Widget _textStatus(int status) {
         ],
         color: status == 1
             ? Colors.green
-            : status == 0 ? Colors.red : Colors.yellow,
+            : status == 2 ? Colors.red : status == 3 ? Colors.grey : Colors.amber,
         borderRadius: BorderRadius.circular(4)),
     child: Text(
-      status == 1 ? 'Open' : status == 0 ? 'Close' : 'Busy',
+      status == 1 ? 'Trống' : status == 2 ? 'Đã thuê' : status == 4 ? 'Đang chờ': 'Bảo trì',
       style: styleStatus,
     ),
   );

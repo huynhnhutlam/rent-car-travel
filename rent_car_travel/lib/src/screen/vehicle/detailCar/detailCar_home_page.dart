@@ -132,7 +132,7 @@ class _DetailCarState extends State<DetailCar>
           ),
         ),
       ),
-      bottomNavigationBar: Container(
+     /*  bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 4, color: Colors.grey)]),
@@ -142,9 +142,9 @@ class _DetailCarState extends State<DetailCar>
           elevation: 5,
           color: Colors.blueAccent,
           onPressed: () {},
-          child: Text('Booking Now'),
+          child: Text('Booking Now',style: TextStyle(color: Colors.amber),),
         ),
-      ),
+      ), */
     );
   }
 
@@ -161,7 +161,7 @@ class _DetailCarState extends State<DetailCar>
           )
         ],
         controller: _tabController,
-        labelColor: Colors.green,
+        labelColor: Colors.amber,
         labelStyle: TextStyle(fontSize: 14),
         unselectedLabelColor: Colors.grey,
         unselectedLabelStyle: TextStyle(fontSize: 12),

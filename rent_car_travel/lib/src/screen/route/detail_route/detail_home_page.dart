@@ -51,7 +51,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
           ),
         ),
       ),
-      bottomNavigationBar: Container(
+     /*  bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 4, color: Colors.grey)]),
@@ -62,7 +62,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
           onPressed: () {},
           child: Text('Selected'),
         ),
-      ),
+      ), */
     );
   }
 
@@ -131,7 +131,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
                   Text(
                     name,
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.orange,
                         shadows: [BoxShadow(blurRadius: 3, spreadRadius: 3)],
                         fontSize: 24,
                         fontWeight: FontWeight.w600),
@@ -166,7 +166,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
       child: TabBar(
         tabs: _tabs,
         controller: _tabController,
-        labelColor: Colors.green,
+        labelColor: Colors.orange,
         labelStyle: TextStyle(fontSize: 14),
         unselectedLabelColor: Colors.grey,
         unselectedLabelStyle: TextStyle(fontSize: 12),

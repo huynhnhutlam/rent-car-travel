@@ -6,6 +6,7 @@ import 'package:rent_car_travel/src/screen/home/popular_vehicle.dart';
 import 'package:rent_car_travel/src/screen/home/service_recommend.dart';
 import 'package:rent_car_travel/src/screen/side_menu/side_menu.dart';
 import 'package:rent_car_travel/src/screen/widget/bottomBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +23,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
-        title: Text('HOME'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.blue),
+        actionsIconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        title: Text(
+          'Trang chủ',
+          style: TextStyle(color: Colors.blue, fontSize: 18),
+        ),
       ),
       body: SafeArea(
         child: Container(
@@ -35,7 +43,6 @@ class _HomePageState extends State<HomePage> {
                   height: 30,
                 ),
                 //NewestCar
-                NewestCar(),
                 ServiceRecommend(),
                 //Popular Vehicle
                 Container(
@@ -53,7 +60,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBar(),
     );
   }
 }

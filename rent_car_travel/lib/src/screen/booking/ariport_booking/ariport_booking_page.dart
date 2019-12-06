@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/ariport_booking/selected_route/selectedRoute.dart';
 
 import 'package:provider/provider.dart';
@@ -9,6 +10,10 @@ import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/screen/booking/selected_date/selected_date_aripot.dart';
 
 class AirportBookingPage extends StatefulWidget {
+  final Service service;
+
+  AirportBookingPage({this.service});
+
   @override
   _AirportBookingPageState createState() => _AirportBookingPageState();
 }
@@ -20,11 +25,28 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text('Ariport Booking'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.blue),
+        title: Text(widget.service.nameService, style: TextStyle(color: Colors.blue, fontSize: 18),),
         actions: <Widget>[
           Center(
               child: InkWell(
-                  child: Text('Tiếp'),
+                  child: Container(
+                      padding: EdgeInsets.all(12),
+                      margin: EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 4,
+                            offset: Offset(0, 1),
+                            color: Colors.white,
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.white,
+                      ),
+                      child: Text('Tiếp tục', style: TextStyle(color: Colors.blue,),)),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -33,6 +55,7 @@ class _AirportBookingPageState extends State<AirportBookingPage> {
                                   pickupPoint: appState.locationController.text,
                                   dropPoint:
                                       appState.destinationController.text,
+                                      service: widget.service,
                                 )));
                   }))
         ],

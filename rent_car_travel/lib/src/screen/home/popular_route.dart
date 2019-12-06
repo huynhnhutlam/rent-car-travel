@@ -17,16 +17,28 @@ class PopularRoute extends StatefulWidget {
 }
 
 class _PopularRouteState extends State<PopularRoute> {
-  Future<List<Routes>> fetchRoute(http.Client client) async {
-    final response = await client.get(ApiHttp.urlListRoute);
+  Future<List<Routes>> _getRotues() async {
+    var data = await http.get(
+        ApiHttp.urlListRoute);
+    var jsonData = json.decode(data.body) as List;
+    List<Routes> vehicles = new List<Routes>();
+    for (var obj in jsonData) {
+      Routes vehicle = Routes(
+        id: obj['id'] as int,
+        nameRoute: obj['name'],
+        image: obj['image'],
+        rating: obj['rating'],
+        lat: obj['lat'],
+        lng: obj['lng'],
+        price4Seats: obj['price_4_seats'],
+        price7Seats: obj['price_7_seats'],
+        description: obj['description'],
+        price16Seats: obj['price_16_seats'],
+      );
+      vehicles.add(vehicle);
+    }
 
-    return compute(parseRoutes, response.body);
-  }
-
-  List<Routes> parseRoutes(String responseBody) {
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
-    return parsed.map<Routes>((json) => Routes.fromJson(json)).toList();
+    return vehicles;
   }
 
   @override
@@ -39,12 +51,12 @@ class _PopularRouteState extends State<PopularRoute> {
             onTap: () {
               Navigator.pushNamed(context, Constants.route_list);
             },
-            text: 'Popular Route',
+            text: 'Tuyến đường phổ biến',
           ),
           new Container(
             height: 200,
             child: FutureBuilder(
-                future: fetchRoute(http.Client()),
+                future: _getRotues(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.data == null) {
                     return new CupertinoActivityIndicator();
@@ -88,6 +100,7 @@ class SinglePopularRoute extends StatefulWidget {
   const SinglePopularRoute(
       {Key key, this.name, this.image, this.description, this.onPressed})
       : super(key: key);
+
   @override
   _SinglePopularRouteState createState() => _SinglePopularRouteState();
 }
