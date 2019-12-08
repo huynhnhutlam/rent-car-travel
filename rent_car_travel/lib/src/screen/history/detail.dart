@@ -21,169 +21,18 @@ String formatter(double n) {
   return f.format(n);
 }
 
-class ConfirmBooking extends StatefulWidget {
+class DetailBooking extends StatefulWidget {
   final Booking booking;
 
-  const ConfirmBooking({Key key, this.booking}) : super(key: key);
+  const DetailBooking({Key key, this.booking}) : super(key: key);
   @override
-  _ConfirmBookingState createState() => _ConfirmBookingState();
+  _DetailBookingState createState() => _DetailBookingState();
 }
 
-class _ConfirmBookingState extends State<ConfirmBooking> {
+class _DetailBookingState extends State<DetailBooking> {
   TextEditingController _controller = TextEditingController();
 
-  _confirm() async {
-    final response = await http.post(ApiHttp.urlConfirm, body: {
-      "id": '${widget.booking.id}',
-      "status_vehicle": '2',
-      "status_booking": '2'
-    });
-    final data = jsonDecode(response.body);
-    if (data['value'] == 200) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Thông báo"),
-            content: Text('Thành công. Về trang chủ'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (builder) => HomPageManage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text('Xác nhận'),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
 
-  _cancel() async {
-    final response = await http.post(ApiHttp.urlConfirm, body: {
-      "id": '${widget.booking.id}',
-      "status_vehicle": '1',
-      "status_booking": '3'
-    });
-    final data = jsonDecode(response.body);
-    if (data['value'] == 200) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Thông báo"),
-            content: Text('Thành công. Về trang chủ'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (builder) => HomPageManage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text('Xác nhận'),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  _completed() async {
-    final response = await http.post(ApiHttp.urlConfirm, body: {
-      "id": '${widget.booking.id}',
-      "status_vehicle": '1',
-      "status_booking": '4'
-    });
-    final data = jsonDecode(response.body);
-    if (data['value'] == 200) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Thông báo"),
-            content: Text('Thành công. Về trang chủ'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (builder) => HomPageManage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text('Xác nhận'),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  _check(String title, {Function onPressed}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Row(
-              children: <Widget>[
-                Icon(Icons.check, color: Colors.green, size: 24),
-                SizedBox(width: 4),
-                Text("Thông báo"),
-              ],
-            ),
-            content: Text(title),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Quay lại'),
-              ),
-              FlatButton(
-                onPressed: onPressed,
-                child: Text('Xác nhận'),
-              ),
-            ],
-          );
-        });
-  }
-
-  _cancelBooking(String title, {Function onPressed}) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Row(
-              children: <Widget>[
-                Icon(Icons.warning, color: Colors.red, size: 24),
-                SizedBox(
-                  width: 4,
-                ),
-                Text("Thông báo"),
-              ],
-            ),
-            content: Text(title),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Quay lại'),
-              ),
-              FlatButton(
-                onPressed: onPressed,
-                child: Text('Xác nhận'),
-              ),
-            ],
-          );
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,52 +55,15 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
   Widget _buildBody() {
     return SingleChildScrollView(
         child: Column(
-      children: <Widget>[
-        _selected(),
-        Center(
-          child: widget.booking.status == 1
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _buildButtonCancel(onPressed: () {
-                      _cancelBooking('Xác nhận hủy chuyến xe của khách hàng!!.',
-                          onPressed: () {
-                        new Future.delayed(new Duration(seconds: 3), () {
-                          //pop dialog
-                          _cancel();
-                          Navigator.pop(context);
-                        });
-                      });
-                    }),
-                    _buildButtonConfirm(onPressed: () {
-                      _check('Xác nhận chuyến xe đến khách hàng!!.',
-                          onPressed: () {
-                        new Future.delayed(new Duration(seconds: 3), () {
-                          //pop dialog
-                          _confirm();
-                          Navigator.pop(context);
-                        });
-                      });
-                    }),
-                  ],
-                )
-              : widget.booking.status == 2
-                  ? _buildButtonCompleted(onPressed: () {
-                      _check('Hoàn thành chuyến xe cho khách hàng!!.',
-                          onPressed: () {
-                        new Future.delayed(new Duration(seconds: 3), () {
-                          //pop dialog
-                          _completed();
-                          Navigator.pop(context);
-                        });
-                      });
-                    })
-                  : _buildButtonBack(onPressed: () {
-                      Navigator.pop(context);
-                    }),
-        )
-      ],
-    ));
+          children: <Widget>[
+            _selected(),
+            Center(
+              child: _buildButtonBack(onPressed: () {
+                Navigator.pop(context);
+              }),
+            )
+          ],
+        ));
   }
 
   Widget _selected() {
@@ -358,8 +170,8 @@ Widget _status(int status, {String title}) {
               status == 1
                   ? 'Chờ xác nhận'
                   : status == 2
-                      ? 'Đã nhận'
-                      : status == 3 ? 'Đã hủy' : 'Hoàn thành',
+                  ? 'Đã nhận'
+                  : status == 3 ? 'Đã hủy' : 'Hoàn thành',
               style: textStyle,
             ))
       ],
@@ -451,7 +263,7 @@ Widget _selectCar(
   TextStyle serviceStyle = TextStyle(
       color: Color(0xFF000000), fontSize: 16, fontWeight: FontWeight.bold);
   TextStyle textServiceStyle =
-      TextStyle(color: Color(0xFF3eb2ec), fontSize: 16);
+  TextStyle(color: Color(0xFF3eb2ec), fontSize: 16);
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,48 +431,6 @@ Widget _image({String image}) {
   );
 }
 
-Widget _buildButtonConfirm({Function onPressed}) {
-  return Container(
-    height: 64,
-    padding: EdgeInsets.all(12),
-    width: 150,
-    child: MaterialButton(
-      elevation: 5,
-      onPressed: onPressed,
-      color: Colors.blueAccent,
-      child: Text(
-        'Xác nhận',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  );
-}
-
-Widget _buildButtonCompleted({Function onPressed}) {
-  return Container(
-    height: 64,
-    padding: EdgeInsets.all(12),
-    width: 200,
-    child: MaterialButton(
-      elevation: 5,
-      onPressed: onPressed,
-      color: Colors.green,
-      child: Text(
-        'Hoàn thành',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  );
-}
-
 Widget _buildButtonBack({Function onPressed}) {
   return Container(
     height: 64,
@@ -672,27 +442,6 @@ Widget _buildButtonBack({Function onPressed}) {
       color: Colors.grey,
       child: Text(
         'Quay về',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  );
-}
-
-Widget _buildButtonCancel({Function onPressed}) {
-  return Container(
-    height: 64,
-    padding: EdgeInsets.all(12),
-    width: 150,
-    child: MaterialButton(
-      elevation: 5,
-      onPressed: onPressed,
-      color: Colors.red,
-      child: Text(
-        'Hủy',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

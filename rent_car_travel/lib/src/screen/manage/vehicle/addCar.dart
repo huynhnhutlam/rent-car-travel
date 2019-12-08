@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,22 +16,42 @@ class _AddCarState extends State<AddCar> {
   TextEditingController _controllerLp = TextEditingController();
   TextEditingController _controllerDes = TextEditingController();
   TextEditingController _controllerPrice = TextEditingController();
-    File _image;
+    Future<File> _image;
+  String base64Image;
+  File tmpFile;
+   getImageCamera(){
+    setState(() {
+      _image = ImagePicker.pickImage(source: ImageSource.camera);
+    });
+  }
 
-  Future getImageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-
+  getImageGallery() {
+    var image =  ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
     });
   }
+  /*startUpload() {
+    setStatus('Uploading Image...');
+    if (null == tmpFile) {
+      setStatus(errMessage);
+      return;
+    }
+    String fileName = tmpFile.path.split('/').last;
+    upload(fileName);
+  }
 
-  Future getImageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image;
+  upload(String fileName) {
+    http.post(uploadEndPoint, body: {
+      "image": base64Image,
+      "name": fileName,
+    }).then((result) {
+      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    }).catchError((error) {
+      setStatus(error);
     });
   }
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +72,7 @@ class _AddCarState extends State<AddCar> {
           child: Column(
             children: <Widget>[
               _buildImagePick(),
+              SizedBox(height: 8,),
               _textfeildInfo('Tên xe', _controllerName),
               _textfeildInfo('Chỗ ngồi', _controllerNum),
               _textfeildInfo('Biển số', _controllerLp),
@@ -66,8 +88,29 @@ class _AddCarState extends State<AddCar> {
     Widget _buildImagePick() {
     return Container(
       height: 200,
-      child: _image == null
-          ? Center(
+      child: FutureBuilder<File>(
+        future: _image,
+        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              null != snapshot.data) {
+            tmpFile = snapshot.data;
+            base64Image = base64Encode(snapshot.data.readAsBytesSync());
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.file(
+                snapshot.data,
+                height: 200,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
+              ),
+            );
+          } else if (null != snapshot.error) {
+            return const Text(
+              'Error Picking Image',
+              textAlign: TextAlign.center,
+            );
+          } else {
+            return Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -80,16 +123,10 @@ class _AddCarState extends State<AddCar> {
                       icon: Icons.dashboard, onPressed: getImageGallery),
                 ],
               ),
-            )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.file(
-                _image,
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              ),
-            ),
+            );
+          }
+        },
+      )
     );
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
+import 'package:http/http.dart' as http;
 
 class UpdateCar extends StatefulWidget {
   final Vehicle vehicle;
@@ -70,8 +72,18 @@ class _UpdateCarState extends State<UpdateCar> {
                                 child: Text('Hủy'),
                               ),
                               FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
+                                onPressed: () async{
+                                  final response = await http.post(ApiHttp.urlListUpdateOpen, body: {
+                                    "id": '${widget.vehicle.id}',
+                                    "name_vehicle": _controllerName.text,
+                                    "mode":"",
+                                    "number_of_seats": _controllerNum.text,
+                                    "license_plates": _controllerLp.text,
+                                    "image": "",
+                                    "description": _controllerDes.text,
+                                    "price_perKm": _controllerPrice.text,
+                                    "status": "1"
+                                  });
                                 },
                                 child: Text('Xác nhận'),
                               )

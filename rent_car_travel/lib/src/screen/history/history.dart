@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/booking/booking.dart';
+import 'package:rent_car_travel/src/screen/history/detail.dart';
 
 class HistoryBooking extends StatefulWidget {
   final String userId;
@@ -92,14 +93,19 @@ Widget _buildItemHistory(
     BuildContext context, AsyncSnapshot snapshot, int index) {
       print(snapshot.data[index].nameUser);
       var data = snapshot.data[index];
-  return Container(
-    child: Row(
-      children: <Widget>[
-      _image(data.imageService),
-      SizedBox(width: 12,),
-      Expanded(child: _info(data.nameService,data.nameVehicle, data.numberOfSeats ,data.dropPoint, data.startDate, data.endDate),),
-      _status(data.status)
-    ],),
+  return InkWell(
+    onTap: (){
+      Navigator.of(context).push(MaterialPageRoute(builder: (builder)=>DetailBooking(booking: data,)));
+    },
+    child: Container(
+      child: Row(
+        children: <Widget>[
+        _image(data.imageService),
+        SizedBox(width: 12,),
+        Expanded(child: _info(data.nameService,data.nameVehicle, data.numberOfSeats ,data.dropPoint, data.startDate, data.endDate),),
+        _status(data.status)
+      ],),
+    ),
   );
 }
 Widget _image(String image){

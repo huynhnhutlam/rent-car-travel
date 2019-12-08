@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_bloc.dart';
+import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
 
 class PlacePickerPage extends StatefulWidget {
@@ -129,7 +131,7 @@ class _RidePickerPageState extends State<PlacePickerPage> {
     );
   }
 
-  Widget _currentAddress(String currentAddress, {List<PlaceItemRes> places}) {
+  Widget _currentAddress(String currentAddress, {List<PlaceItemRes> place, Function onPressed}) {
     return InkWell(
       onTap: (){
         Navigator.of(context).pop();
