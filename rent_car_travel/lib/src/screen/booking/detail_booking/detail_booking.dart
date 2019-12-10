@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
-import 'package:rent_car_travel/src/constants/contants.dart';
 import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:rent_car_travel/src/screen/home/home_page.dart';
@@ -114,9 +113,9 @@ class _DetailBookingState extends State<DetailBooking> {
               ),
               FlatButton(
                 onPressed: () {
+                  _booking();
                   new Future.delayed(new Duration(seconds: 3), () {
                     //pop dialog
-                    _booking();
                     Navigator.pop(context);
                   });
                 },
@@ -189,7 +188,7 @@ class _DetailBookingState extends State<DetailBooking> {
               nameCar: widget.vehicle.nameCar,
               numberOfSeats: widget.vehicle.numberOfSeats,
               service: widget.service.nameService,
-              image: widget.vehicle.imageCar),
+              image: ApiHttp.urlImageVehicle + widget.vehicle.imageCar),
           _line(),
           _info(name, title: 'Tên khách hàng'),
           _line(),

@@ -75,7 +75,7 @@ class _RouteListState extends State<RouteList> {
           Expanded(
             flex: 2,
             child: _imageRoute(
-              image: NetworkImage(data.image),
+              image: NetworkImage(ApiHttp.urlImageRoute + data.image),
               chilld: Stack(
                 children: <Widget>[
                   Positioned(

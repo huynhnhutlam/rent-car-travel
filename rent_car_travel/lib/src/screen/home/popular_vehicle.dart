@@ -116,7 +116,7 @@ Widget _singlePopularVehicle(
               height: 150.0,
               decoration: new BoxDecoration(),
               child: CachedNetworkImage(
-                imageUrl: data.imageCar,
+                imageUrl: ApiHttp.urlImageVehicle + data.imageCar,
                 fit: BoxFit.fill,
               ),
             ),

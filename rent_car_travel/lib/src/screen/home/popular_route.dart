@@ -67,8 +67,8 @@ class _PopularRouteState extends State<PopularRoute> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         return SinglePopularRoute(
-                          name: snapshot.data[index].nameRoute,
-                          image: snapshot.data[index].image,
+                          name:  snapshot.data[index].nameRoute,
+                          image: ApiHttp.urlImageRoute + snapshot.data[index].image,
                           description: snapshot.data[index].description,
                           onPressed: () {
                             Navigator.push(

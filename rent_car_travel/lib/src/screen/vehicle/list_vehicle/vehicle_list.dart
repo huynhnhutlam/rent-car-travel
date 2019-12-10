@@ -97,7 +97,7 @@ Widget _buildItemCar(BuildContext context, AsyncSnapshot snapshot, int index) {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          _imageCar(NetworkImage(data.imageCar)),
+          _imageCar(NetworkImage(ApiHttp.urlImageVehicle + data.imageCar)),
           Expanded(
             child: _buildInfoCar(
                 data.nameCar, data.mode, data.numberOfSeats, data.description),

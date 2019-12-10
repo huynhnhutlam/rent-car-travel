@@ -46,14 +46,17 @@ class _SignInPageState extends State<SignInPage> {
       message: 'Please wait...',
     );
     prLogin.show();
-    Future.delayed(Duration(seconds: 5)).then((value) {
+
+
       if (form.validate()) {
         _login();
+        Future.delayed(Duration(seconds: 5)).then((value) {
         prLogin.hide().whenComplete(() {
           form.save();
         });
+        });
       }
-    });
+
   }
 
   _login() async {
@@ -144,6 +147,11 @@ class _SignInPageState extends State<SignInPage> {
       color: Colors.white,
       fontSize: 16,
       fontWeight: FontWeight.w300,
+    );
+    final styleTitle = TextStyle(
+      color: Colors.white,
+      fontSize: 24,
+      fontWeight: FontWeight.w500,
     );
     final buttonSignIn = new StreamBuilder<bool>(
       stream: loginModel.btnLoginStrem,
@@ -239,7 +247,7 @@ class _SignInPageState extends State<SignInPage> {
                           Container(
                               child: Text(
                             'Car Travel',
-                            style: style,
+                            style: styleTitle,
                           )),
                           textUsername,
                           Container(

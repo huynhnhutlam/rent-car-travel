@@ -83,7 +83,7 @@ class _SelectedDateState extends State<SelectedDate> {
                   _selectedDate(context);
                 },
                 valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
-                timePicker: 'Time to go',
+                timePicker: 'Thời gian đi',
               ),
             ),
 

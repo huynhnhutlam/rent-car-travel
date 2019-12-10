@@ -70,7 +70,7 @@ class WeddingBookingPage extends StatelessWidget {
             }));
           },
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: TextStyle(color: Colors.white),
           ),
         ),

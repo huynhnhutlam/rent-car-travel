@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rent_car_travel/src/bloc/place_notifer.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:rent_car_travel/src/screen/booking/detail_booking/detail_booking.dart';
@@ -56,7 +57,7 @@ class _SelectCarState extends State<SelectCar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _imageCar(
-                    image: vehicle == null ? null : vehicle.imageCar,
+                    image: vehicle == null ? null : ApiHttp.urlImageVehicle +vehicle.imageCar,
                     onPressed: () {
                       _waitData(context);
                     }),

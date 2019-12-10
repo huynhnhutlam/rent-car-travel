@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:rent_car_travel/src/screen/vehicle/detailCar/review_car.dart';
 
@@ -105,7 +106,7 @@ class _DetailCarState extends State<DetailCar>
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage(data.imageCar),
+                                image: NetworkImage(ApiHttp.urlImageVehicle +data.imageCar),
                               ),
                             ),
                           ),

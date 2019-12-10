@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:rent_car_travel/src/models/route.dart';
 import 'package:rent_car_travel/src/screen/manage/route/addRoute.dart';
 import 'package:rent_car_travel/src/screen/manage/route/updateRoute.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class RouteList extends StatefulWidget {
   final String title;
@@ -17,7 +18,8 @@ class RouteList extends StatefulWidget {
   @override
   _RouteListState createState() => _RouteListState();
 }
- Future<List<Routes>> fetchRoute(http.Client client) async {
+
+Future<List<Routes>> fetchRoute(http.Client client) async {
   final response = await client.get(ApiHttp.urlListRoute);
 
   return compute(parseRoutes, response.body);
@@ -28,21 +30,56 @@ List<Routes> parseRoutes(String responseBody) {
 
   return parsed.map<Routes>((json) => Routes.fromJson(json)).toList();
 }
+
 class _RouteListState extends State<RouteList> {
   double radius = 8;
- 
+  ProgressDialog prLogin;
+
+  _deletedRoute(int id) async {
+    final response = await http.post(ApiHttp.urlListDeleteRoute, body: {
+      "id": '${id.toInt()}',
+    });
+    final data = jsonDecode(response.body);
+    if (data['value'] == 200) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Thông báo"),
+              content: Text('Xóa thành công. Quay lại.'),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Xác nhận'),
+                )
+              ],
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    prLogin = new ProgressDialog(context);
+    prLogin.style(
+      message: 'Please wait...',
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
-        title: Text(widget.title, style: TextStyle(color: Colors.blue,fontSize: 18),),
-         actions: <Widget>[
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.blue, fontSize: 18),
+        ),
+        actions: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (builder) => AddRoute() ));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (builder) => AddRoute()));
             },
             child: Text(
               'Thêm mới',
@@ -54,7 +91,8 @@ class _RouteListState extends State<RouteList> {
       body: _buildBody(),
     );
   }
-  Widget _buildBody(){
+
+  Widget _buildBody() {
     return FutureBuilder(
       future: fetchRoute(http.Client()),
       builder: (context, snapshot) {
@@ -65,18 +103,21 @@ class _RouteListState extends State<RouteList> {
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.all(16),
-                  separatorBuilder: (context, index){
-                    return SizedBox(height: 16,);
+                  separatorBuilder: (context, index) {
+                    return SizedBox(
+                      height: 16,
+                    );
                   },
                   itemBuilder: (context, index) {
                     return _itemRouteList(snapshot, index);
                   },
                 ),
               )
-            : Center(child:CupertinoActivityIndicator());
+            : Center(child: CupertinoActivityIndicator());
       },
     );
   }
+
   Widget _itemRouteList(AsyncSnapshot snapshot, int index) {
     var data = snapshot.data[index];
     return Container(
@@ -95,7 +136,7 @@ class _RouteListState extends State<RouteList> {
       child: Row(
         children: <Widget>[
           _imageRoute(
-            image: NetworkImage(data.image),
+            image: NetworkImage(ApiHttp.urlImageRoute + data.image),
             chilld: Stack(
               children: <Widget>[
                 Positioned(
@@ -121,27 +162,59 @@ class _RouteListState extends State<RouteList> {
               ),
             ),
           ),
-           PopupMenuButton<int>(
-             
-              onSelected:(int value){
-                if(value == 1){
-                  Navigator.push(context, MaterialPageRoute(builder: (builder) => UpdateRoute(routes: data,)));
-                }
-                if(value == 2){
-                  print('Xóa');
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 1,
-                  child: Text("Cập nhật"),
-                ),
-                PopupMenuItem(
-                  value: 2,
-                  child: Text("Xóa"),
-                ),
-              ],
-            )
+          PopupMenuButton<int>(
+            onSelected: (int value) {
+              if (value == 1) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => UpdateRoute(
+                              routes: data,
+                            )));
+              }
+              if (value == 2) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        elevation: 5,
+                        title: Text('Thông báo'),
+                        content: Text('Bạn muốn xoá xe ??'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Hủy'),
+                          ),
+                          FlatButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              prLogin.show();
+                              _deletedRoute(data.id);
+                              Future.delayed(Duration(seconds: 5))
+                                  .then((value) {
+                                prLogin.hide().whenComplete(() {});
+                              });
+                            },
+                            child: Text('Xác nhận'),
+                          )
+                        ],
+                      );
+                    });
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Text("Cập nhật"),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Text("Xóa"),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -230,7 +303,8 @@ Widget _textRating(String rating) {
 
 BoxDecoration _decorate = BoxDecoration(
   color: Colors.amber,
-  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(4), bottomRight:  Radius.circular(4)),
+  borderRadius: BorderRadius.only(
+      bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4)),
   boxShadow: [
     BoxShadow(
         blurRadius: 4.0,
@@ -245,4 +319,3 @@ double sizeName = 14;
 double sizeDescription = 12;
 Color colorNameRoute = Color(0xFF000000);
 Color colorDescription = Color(0xFF737373);
-
