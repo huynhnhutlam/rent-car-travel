@@ -113,10 +113,11 @@ class _DetailBookingState extends State<DetailBooking> {
               ),
               FlatButton(
                 onPressed: () {
-                  _booking();
+                 
                   new Future.delayed(new Duration(seconds: 3), () {
                     //pop dialog
                     Navigator.pop(context);
+                     _booking();
                   });
                 },
                 child: Text('Xác nhận'),

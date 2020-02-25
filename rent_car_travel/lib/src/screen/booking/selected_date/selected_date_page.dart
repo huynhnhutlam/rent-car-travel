@@ -112,7 +112,7 @@ class _SelectDatePageState extends State<SelectDatePage> {
             )));
           },
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: TextStyle(color: Colors.white),
           ),
         ),

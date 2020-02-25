@@ -138,7 +138,7 @@ class _SelectedDateState extends State<SelectedDate> {
             )));
           },
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: TextStyle(color: Colors.white),
           ),
         ),

@@ -157,9 +157,11 @@ class _SignInPageState extends State<SignInPage> {
       stream: loginModel.btnLoginStrem,
       builder: (context, snapshot) {
         return Container(
+          color: Colors.blueAccent,
             margin: EdgeInsets.only(bottom: 10),
+            height: 45,
             child: MaterialButton(
-              height: 45,
+              
               minWidth: width,
               color: Colors.blueAccent,
               onPressed: snapshot.data == true
