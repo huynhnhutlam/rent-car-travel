@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_car_travel/src/constants/api_http.dart';
-import 'package:rent_car_travel/src/models/services.dart';
-import 'package:rent_car_travel/src/models/vehicle.dart';
-import 'package:rent_car_travel/src/screen/home/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rent_car_travel/src/models/booking/booking.dart';
 import 'package:http/http.dart' as http;
+import 'package:rent_car_travel/src/screen/manage/home/home.dart';
 
 String currencyFormatter(int n) {
   final formatter = new NumberFormat.currency(
@@ -24,154 +22,54 @@ String formatter(double n) {
 }
 
 class DetailBooking extends StatefulWidget {
-  final Vehicle vehicle;
-  final String timeTogo;
-  final String timeReturn;
-  final String pickupPoint;
-  final String dropPoint;
-  final double distance;
-  final Service service;
+  final Booking booking;
 
+  const DetailBooking({Key key, this.booking}) : super(key: key);
   @override
   _DetailBookingState createState() => _DetailBookingState();
-
-  DetailBooking(
-      {this.vehicle,
-      this.timeTogo,
-      this.timeReturn,
-      this.pickupPoint,
-      this.dropPoint,
-      this.distance,
-      this.service});
 }
 
 class _DetailBookingState extends State<DetailBooking> {
   TextEditingController _controller = TextEditingController();
-  String name = '', phone = '', id = '';
 
-  getPref() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      phone = preferences.getString("phone");
-      name = preferences.getString("name");
-      id = preferences.getString("id");
-    });
-  }
 
-  _booking() async {
-    final response = await http.post(ApiHttp.urlBooking, body: {
-      "user_id": id,
-      "vehicle_id": '${widget.vehicle.id}',
-      "start_date_booking": widget.timeTogo,
-      "end_date_booking":
-          widget.timeReturn == null ? widget.timeTogo : widget.timeReturn,
-      "pick_up_point": widget.pickupPoint,
-      "drop_point": widget.dropPoint,
-      "service_id": '${widget.service.id}',
-      "driver_id": '1',
-      "note": _controller.text,
-      "price": '${widget.vehicle.pricePerKm * widget.distance.toInt()}',
-    });
-    final data = jsonDecode(response.body);
-    if (data['value'] == 200) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Thông báo"),
-            content: Text('Đặt xe thành công. Về trang chủ.'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (builder) => HomePage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text('Xác nhận'),
-              )
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  _check() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Thông báo"),
-            content: Text('Bạn có muốn đặt xe!!.'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Quay lại'),
-              ),
-              FlatButton(
-                onPressed: () {
-                 
-                  new Future.delayed(new Duration(seconds: 3), () {
-                    //pop dialog
-                    Navigator.pop(context);
-                     _booking();
-                  });
-                },
-                child: Text('Xác nhận'),
-              ),
-            ],
-          );
-        });
-  }
-
-  @override
-  void initState() {
-    getPref();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        elevation: 5,
         iconTheme: IconThemeData(color: Colors.blue),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: true,
         title: Text(
           'Xác nhận',
           style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
       ),
-      body: Container(
-        child: GestureDetector(
-          onTap: () {},
-          child: _buildBody(),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        child: _buildBottomButton(onPressed: () {
-          _check();
-        }),
-      ),
+      body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
     return SingleChildScrollView(
         child: Column(
-      children: <Widget>[
-        _selected(controller: _controller),
-      ],
-    ));
+          children: <Widget>[
+            _selected(),
+            Center(
+              child: _buildButtonBack(onPressed: () {
+                Navigator.pop(context);
+              }),
+            )
+          ],
+        ));
   }
 
-  Widget _selected({TextEditingController controller}) {
+  Widget _selected() {
     TextStyle titleStyle = TextStyle(
         color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
-    int price = widget.vehicle.pricePerKm * widget.distance.toInt();
+
     return Container(
       margin: EdgeInsets.all(16),
       padding: EdgeInsets.all(16),
@@ -186,23 +84,24 @@ class _DetailBookingState extends State<DetailBooking> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _selectCar(
-              nameCar: widget.vehicle.nameCar,
-              numberOfSeats: widget.vehicle.numberOfSeats,
-              service: widget.service.nameService,
-              image: ApiHttp.urlImageVehicle + widget.vehicle.imageCar),
+              service: widget.booking.nameService,
+              image: widget.booking.imageService,
+              nameCar: widget.booking.nameVehicle,
+              numberOfSeats: widget.booking.numberOfSeats),
           _line(),
-          _info(name, title: 'Tên khách hàng'),
+          _info(widget.booking.nameUser, title: 'Tên khách hàng'),
           _line(),
-          _info(phone, title: 'Số điện thoại'),
+          _info(widget.booking.phone, title: 'Số điện thoại'),
           _line(),
-          _distance(widget.distance),
+          _selectDate(
+              timeTogo: widget.booking.startDate,
+              timeReturn: widget.booking.endDate),
           _line(),
-          _price(price: price),
+          _selectRoute(widget.booking.pickUpPoint, title: 'Điểm đón'),
           _line(),
-          _selectDate(timeTogo: widget.timeTogo, timeReturn: widget.timeReturn),
+          _selectRoute(widget.booking.dropPoint, title: 'Điểm đến'),
           _line(),
-          _selectRoute(widget.pickupPoint, title: 'Điểm đón'),
-          _selectRoute(widget.dropPoint, title: 'Điểm đến'),
+          _price(price: widget.booking.price),
           _line(),
           Row(
             children: <Widget>[
@@ -221,11 +120,63 @@ class _DetailBookingState extends State<DetailBooking> {
               )
             ],
           ),
-          _inputNote(controller)
+          _inputNote(widget.booking.note),
+          _line(),
+          _status(
+            widget.booking.status,
+            title: 'Trạng thái',
+          )
         ],
       ),
     );
   }
+}
+
+Widget _status(int status, {String title}) {
+  TextStyle titleStyle = TextStyle(
+      color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
+  TextStyle textStyle = TextStyle(
+      color: status == 1
+          ? Colors.amber
+          : status == 2 ? Colors.blue : status == 3 ? Colors.red : Colors.green,
+      fontSize: 12,
+      fontWeight: FontWeight.bold);
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Icon(
+              Icons.directions,
+              size: 16,
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              title,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Container(
+            margin: EdgeInsets.only(left: 8),
+            child: Text(
+              status == 1
+                  ? 'Chờ xác nhận'
+                  : status == 2
+                  ? 'Đã nhận'
+                  : status == 3 ? 'Đã hủy' : 'Hoàn thành',
+              style: textStyle,
+            ))
+      ],
+    ),
+  );
 }
 
 Widget _info(String text, {String title}) {
@@ -304,44 +255,6 @@ Widget _price({int price}) {
   );
 }
 
-Widget _distance(double distance) {
-  TextStyle titleStyle = TextStyle(
-      color: Color(0xFF000000), fontSize: 14, fontWeight: FontWeight.bold);
-  TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Icon(
-              Icons.directions,
-              size: 16,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Text(
-              'Khoảng cách',
-              style: titleStyle,
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Container(
-            margin: EdgeInsets.only(left: 8),
-            child: Text(
-              '${formatter(distance)} km',
-              style: textStyle,
-            ))
-      ],
-    ),
-  );
-}
-
 Widget _selectCar(
     {String nameCar, int numberOfSeats, String service, String image}) {
   TextStyle titleStyle = TextStyle(
@@ -350,7 +263,7 @@ Widget _selectCar(
   TextStyle serviceStyle = TextStyle(
       color: Color(0xFF000000), fontSize: 16, fontWeight: FontWeight.bold);
   TextStyle textServiceStyle =
-      TextStyle(color: Color(0xFF3eb2ec), fontSize: 16);
+  TextStyle(color: Color(0xFF3eb2ec), fontSize: 16);
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,23 +306,11 @@ Widget _selectCar(
       Container(
         child: Row(
           children: <Widget>[
-            _image(image: image),
+            _image(image: image != null ? image : null),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    nameCar,
-                    style: textStyle,
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    '${numberOfSeats.toInt()} chỗ',
-                    style: textStyle,
-                  )
-                ],
+              child: Text(
+                nameCar + ' - ' + '${numberOfSeats.toInt()} chỗ',
+                style: textStyle,
               ),
             )
           ],
@@ -419,17 +320,12 @@ Widget _selectCar(
   );
 }
 
-Widget _inputNote(TextEditingController controller) {
+Widget _inputNote(String note) {
+  TextStyle textStyle = TextStyle(color: Color(0xFF737373), fontSize: 12);
   return Container(
-    margin: EdgeInsets.only(top: 12),
-    color: Colors.grey[200],
-    child: TextField(
-      controller: controller,
-      maxLines: 4,
-      decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(), border: OutlineInputBorder()),
-    ),
-  );
+      margin: EdgeInsets.only(top: 12),
+      color: Colors.grey[200],
+      child: Text(note, maxLines: 4, style: textStyle));
 }
 
 Widget _line() {
@@ -535,26 +431,17 @@ Widget _image({String image}) {
   );
 }
 
-Widget _buildBottomButton({Function onPressed}) {
+Widget _buildButtonBack({Function onPressed}) {
   return Container(
-    height: 56,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(14),
-        topRight: Radius.circular(14),
-      ),
-      boxShadow: [
-        BoxShadow(blurRadius: 4, color: Colors.grey, spreadRadius: 0),
-      ],
-    ),
+    height: 64,
     padding: EdgeInsets.all(12),
+    width: 200,
     child: MaterialButton(
       elevation: 5,
       onPressed: onPressed,
-      color: Colors.blueAccent,
+      color: Colors.grey,
       child: Text(
-        'Đặt xe',
+        'Quay về',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

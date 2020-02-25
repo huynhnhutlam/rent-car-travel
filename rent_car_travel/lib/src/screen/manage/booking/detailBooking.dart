@@ -39,7 +39,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       "status_booking": '2'
     });
     final data = jsonDecode(response.body);
-    if (data['valuse'] == 200) {
+    if (data['value'] == 200) {
       showDialog(
         context: context,
         builder: (context) {

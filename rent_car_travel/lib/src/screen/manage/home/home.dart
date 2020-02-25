@@ -3,6 +3,7 @@ import 'package:rent_car_travel/src/screen/manage/booking/booking.dart';
 import 'package:rent_car_travel/src/screen/manage/route/route.dart';
 import 'package:rent_car_travel/src/screen/manage/vehicle/vehicle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rent_car_travel/src/screen/sign_in/sign_in_page.dart';
 
 class HomPageManage extends StatefulWidget {
   @override
@@ -64,7 +65,7 @@ class _HomPageManageState extends State<HomPageManage> {
                             BookingList(home[index]['title'])));
               }
               if (home[index]['id'] == 5) {
-                
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (builder) => SignInPage()),  (Route<dynamic> route) => false);
               }
             },
             child: _itemGrid(home[index]['title'], home[index]['image']),

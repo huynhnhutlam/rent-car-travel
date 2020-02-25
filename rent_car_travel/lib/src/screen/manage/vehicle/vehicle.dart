@@ -8,6 +8,7 @@ import 'package:rent_car_travel/src/models/vehicle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rent_car_travel/src/screen/manage/vehicle/addCar.dart';
 import 'package:rent_car_travel/src/screen/manage/vehicle/updateCar.dart';
+
 class CarList extends StatefulWidget {
   final String title;
 
@@ -44,6 +45,31 @@ class _CarListState extends State<CarList> {
     return vehicles;
   }
 
+  _deletedVehicle(int id) async {
+    final response = await http.post(ApiHttp.urlListDeleteVehicle, body: {
+      "id": '${id.toInt()}',
+    });
+    final data = jsonDecode(response.body);
+    if (data['value'] == 200) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Thông báo"),
+              content: Text('Xóa thành công. Quay lại.'),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Xác nhận'),
+                )
+              ],
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +84,8 @@ class _CarListState extends State<CarList> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (builder) => AddCar() ));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (builder) => AddCar()));
             },
             child: Text(
               'Thêm mới',
@@ -93,7 +120,6 @@ class _CarListState extends State<CarList> {
     );
   }
 
-
   Widget _itemCar(AsyncSnapshot snapshot, int index, {Function onLongPressed}) {
     var data = snapshot.data[index];
     return InkWell(
@@ -107,7 +133,7 @@ class _CarListState extends State<CarList> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            _imageCar(data.imageCar),
+            _imageCar(ApiHttp.urlImageVehicle + data.imageCar),
             Expanded(
               child: _buildInfoCar(data.nameCar, data.mode, data.numberOfSeats,
                   data.description),
@@ -116,12 +142,43 @@ class _CarListState extends State<CarList> {
                 alignment: Alignment.bottomCenter,
                 child: _textStatus(data.status)),
             PopupMenuButton<int>(
-              onSelected:(int value){
-                if(value == 1){
-                  Navigator.push(context, MaterialPageRoute(builder: (builder) => UpdateCar(vehicle: data,)));
+              onSelected: (int value) {
+                if (value == 1) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => UpdateCar(
+                                vehicle: data,
+                              )));
                 }
-                if(value == 2){
-                  print('Xóa');
+                if (value == 2) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          elevation: 5,
+                          title: Text('Thông báo'),
+                          content: Text('Bạn muốn xoá xe ??'),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Hủy'),
+                            ),
+                            FlatButton(
+                              onPressed: () async {
+                                Future.delayed(Duration(seconds: 5))
+                                    .then((value) {
+                                  _deletedVehicle(data.id);
+                                  Navigator.pop(context);
+                                });
+                              },
+                              child: Text('Xác nhận'),
+                            )
+                          ],
+                        );
+                      });
                 }
               },
               itemBuilder: (context) => [
@@ -140,7 +197,6 @@ class _CarListState extends State<CarList> {
       ),
     );
   }
-
 }
 
 Container _imageCar(String image) {
@@ -154,7 +210,10 @@ Container _imageCar(String image) {
           BoxShadow(blurRadius: 4, color: Colors.grey, offset: Offset(0, 1))
         ],
         borderRadius: BorderRadius.circular(12)),
-    child: CachedNetworkImage(imageUrl: image, fit: BoxFit.fill,),
+    child: CachedNetworkImage(
+      imageUrl: image,
+      fit: BoxFit.fill,
+    ),
   );
 }
 
@@ -238,10 +297,14 @@ Widget _textStatus(int status) {
         ],
         color: status == 1
             ? Colors.green
-             : status == 2 ? Colors.red : status == 3 ? Colors.grey : Colors.amber,
+            : status == 2
+                ? Colors.red
+                : status == 3 ? Colors.grey : Colors.amber,
         borderRadius: BorderRadius.circular(4)),
     child: Text(
-       status == 1 ? 'Trống' : status == 2 ? 'Đã thuê' : status == 4 ? 'Đang chờ': 'Bảo trì',
+      status == 1
+          ? 'Trống'
+          : status == 2 ? 'Đã thuê' : status == 4 ? 'Đang chờ' : 'Bảo trì',
       style: styleStatus,
     ),
   );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/vehicle/banner..dart';
 import 'dart:async';
 import 'dart:convert';
@@ -16,7 +17,7 @@ const List<String> imageUrls = <String>[
 ];
 Future<List<BannerImage>> fetchPhotos(http.Client client) async {
   final response =
-      await client.get('http://rentcartravel.localtunnel.me/rent_car/vehicle/get_banner_vehicle.php');
+      await client.get(ApiHttp.urlListBannerVehicle);
 
   return compute(parseBanner, response.body);
 }

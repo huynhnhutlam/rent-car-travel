@@ -9,6 +9,7 @@ import 'package:rent_car_travel/src/models/loginModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_car_travel/src/screen/manage/home/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _SignInPageState extends State<SignInPage> {
   final loginModel = LoginModel();
   String msg = '';
   final _key = new GlobalKey<FormState>();
+  ProgressDialog prLogin;
 
   @override
   void initState() {
@@ -39,28 +41,22 @@ class _SignInPageState extends State<SignInPage> {
 
   check() {
     final form = _key.currentState;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Đăng nhập"),
-          content: new Row(
-            children: [
-              new CircularProgressIndicator(),
-              new Text("Loading.."),
-            ],
-          ),
-        );
-      },
+    prLogin = new ProgressDialog(context);
+    prLogin.style(
+      message: 'Please wait...',
     );
-    new Future.delayed(new Duration(seconds: 3), () {
+    prLogin.show();
+
+
       if (form.validate()) {
-        form.save();
-        //pop dialog
         _login();
-        Navigator.pop(context);
+        Future.delayed(Duration(seconds: 5)).then((value) {
+        prLogin.hide().whenComplete(() {
+          form.save();
+        });
+        });
       }
-    });
+
   }
 
   _login() async {
@@ -152,13 +148,20 @@ class _SignInPageState extends State<SignInPage> {
       fontSize: 16,
       fontWeight: FontWeight.w300,
     );
+    final styleTitle = TextStyle(
+      color: Colors.white,
+      fontSize: 24,
+      fontWeight: FontWeight.w500,
+    );
     final buttonSignIn = new StreamBuilder<bool>(
       stream: loginModel.btnLoginStrem,
       builder: (context, snapshot) {
         return Container(
+          color: Colors.blueAccent,
             margin: EdgeInsets.only(bottom: 10),
+            height: 45,
             child: MaterialButton(
-              height: 45,
+              
               minWidth: width,
               color: Colors.blueAccent,
               onPressed: snapshot.data == true
@@ -246,7 +249,7 @@ class _SignInPageState extends State<SignInPage> {
                           Container(
                               child: Text(
                             'Car Travel',
-                            style: style,
+                            style: styleTitle,
                           )),
                           textUsername,
                           Container(

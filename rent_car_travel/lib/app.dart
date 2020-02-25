@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
             ));
       case Constants.travel_booking:
         return new MaterialPageRoute(builder: (context) => TravelBookingPage(
-          titleService: settings.arguments,
+          service: settings.arguments,
         ));
         break;
       default:

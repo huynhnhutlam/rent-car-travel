@@ -70,7 +70,7 @@ class WeddingBookingPage extends StatelessWidget {
             }));
           },
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -80,5 +80,6 @@ class WeddingBookingPage extends StatelessWidget {
 
   void onPlaceSelected(PlaceItemRes place, bool fromAddress, BuildContext context) {
     Provider.of<AppState>(context).sendRequest(place.name);
+
   }
 }

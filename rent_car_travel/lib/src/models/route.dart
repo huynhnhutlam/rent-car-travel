@@ -27,7 +27,7 @@ class Routes {
       id: json['id'] as int,
       nameRoute: json['name'],
       image: json['image'],
-      rating: json['rating'],
+      rating: json['rating'] as double,
       lat: json['lat'],
       lng: json['lng'],
       price4Seats: json['price_4_seats'],

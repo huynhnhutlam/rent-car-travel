@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rent_car_travel/src/bloc/place_notifer.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
+import 'package:rent_car_travel/src/models/services.dart';
 import 'package:rent_car_travel/src/screen/booking/travel/selected_Route_Travel/selectedRoute.dart';
 
 class TravelBookingPage extends StatefulWidget {
-  final String titleService;
+  final Service service;
 
-  TravelBookingPage({this.titleService});
+  TravelBookingPage({this.service});
 
   @override
   _TravelBookingPageState createState() => _TravelBookingPageState();
@@ -20,7 +23,7 @@ class _TravelBookingPageState extends State<TravelBookingPage> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text(
-          widget.titleService,
+          widget.service.nameService,
           style: TextStyle(color: Colors.blue, fontSize: 18),
         ),
         centerTitle: true,
@@ -52,5 +55,6 @@ class _TravelBookingPageState extends State<TravelBookingPage> {
     );
   }
    void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
-    var mkId = fromAddress ? "from_address" : "to_address";}
+     Provider.of<AppState>(context).sendRequest(place.name);
+  }
 }

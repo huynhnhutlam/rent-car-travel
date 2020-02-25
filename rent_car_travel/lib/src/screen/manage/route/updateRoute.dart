@@ -1,10 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/route.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:rent_car_travel/src/models/place_item.dart';
 import 'package:rent_car_travel/src/screen/map/place_picker_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'package:async/async.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as Img;
+
+import 'dart:math' as Math;
+
 
 class UpdateRoute extends StatefulWidget {
   final Routes routes;
@@ -15,38 +26,107 @@ class UpdateRoute extends StatefulWidget {
 }
 
 class _UpdateRouteState extends State<UpdateRoute> {
-  File _image;
+  TextEditingController _controllerName =
+  TextEditingController();
+  TextEditingController _controllerDes =
+  TextEditingController();
+  TextEditingController _controllerLatLng = TextEditingController(
+      );
+  TextEditingController _controllerPrice4s =
+  TextEditingController();
+  TextEditingController _controllerPrice7s =
+  TextEditingController();
+  TextEditingController _controllerPrice16s =
+  TextEditingController();
 
-  Future getImageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+  File _imageUpload;
 
-    setState(() {
-      _image = image;
-    });
-  }
 
   Future getImageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+
+    int rand = new Math.Random().nextInt(100000);
+
+    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+    Img.Image smallerImg = Img.copyResize(image, height: 200, width: 200);
+
+    var compressImg = new File("$path/image_$rand.jpg")
+      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 85));
+
     setState(() {
-      _image = image;
+      _imageUpload = compressImg;
     });
   }
 
+  Future getImageCamera() async {
+    var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+
+    int rand = new Math.Random().nextInt(100000);
+
+    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+    Img.Image smallerImg = Img.copyResize(image);
+
+    var compressImg = new File("$path/vehicle_$rand.jpg")
+      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 85));
+
+    setState(() {
+      _imageUpload = compressImg;
+    });
+  }
+
+  Future upload(File imageFile) async {
+    var stream =
+    new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var length = await imageFile.length();
+    var uri = Uri.parse(ApiHttp.urlListUpdateRoute);
+
+    var request = new http.MultipartRequest("POST", uri);
+
+    var multipartFile = new http.MultipartFile("image", stream, length,
+        filename: basename(imageFile.path));
+    request.fields['id'] = '${widget.routes.id}';
+    request.fields['name_route'] = _controllerName.text;
+    request.fields['description'] = _controllerDes.text;
+    request.fields['lat'] = fromAddress == null ? widget.routes.lat : '${fromAddress.lat}';
+    request.fields['lng'] = fromAddress == null ? widget.routes.lng : '${fromAddress.lng}';
+    request.fields['price_of_4_seats'] = '${_controllerPrice4s.text}';
+    request.fields['price_of_7_seats'] = '${_controllerPrice7s.text}';
+    request.fields['price_of_16_seats'] = '${_controllerPrice16s.text}';
+    request.fields['rating'] = '${widget.routes.rating}';
+
+    request.files.add(multipartFile);
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Image Uploaded");
+    } else {
+      print("Upload Failed");
+    }
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+  }
   PlaceItemRes fromAddress;
   @override
+  void initState() {
+    _controllerName.value = TextEditingValue(text: widget.routes.nameRoute);
+    _controllerDes.value = TextEditingValue(text: widget.routes.description);
+    _controllerLatLng.value = TextEditingValue(text: '${widget.routes.lat} - ${widget.routes.lng}');
+    _controllerPrice4s.value = TextEditingValue(text: '${widget.routes.price4Seats}');
+    _controllerPrice7s.value = TextEditingValue(text: '${widget.routes.price7Seats}');
+    _controllerPrice16s.value = TextEditingValue(text: '${widget.routes.price16Seats}');
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    TextEditingController _controllerName =
-        TextEditingController(text: widget.routes.nameRoute);
-    TextEditingController _controllerDes =
-        TextEditingController(text: widget.routes.description);
-    TextEditingController _controllerLatLng = TextEditingController(
-        text: '${widget.routes.lat} - ${widget.routes.lng}');
-    TextEditingController _controllerPrice4s =
-        TextEditingController(text: '${widget.routes.price4Seats}');
-    TextEditingController _controllerPrice7s =
-        TextEditingController(text: '${widget.routes.price7Seats}');
-    TextEditingController _controllerPrice16s =
-        TextEditingController(text: '${widget.routes.price16Seats}');
+
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -64,16 +144,31 @@ class _UpdateRouteState extends State<UpdateRoute> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                _buildImagePick(),
+                Center(
+                  child: _imageUpload == null
+                      ? InkWell(
+                      onTap: () {
+                        getImageGallery();
+                      },
+                      child: _buildImagePick(context))
+                      : new ClipRRect(borderRadius: BorderRadius.circular(6),child:Image.file(_imageUpload, fit: BoxFit.cover, ),)
+                ),
                 _line(),
                 Column(
                   children: <Widget>[
                     _textfeildInfo('Tên tuyến đường', _controllerName),
                     _selectedPickUp(
                         fromAddress == null
-                            ? _controllerLatLng.text
-                            : fromAddress.name,
-                        _selectedPickUpPlace),
+                            ? '${widget.routes.lat} - ${widget.routes.lng}'
+                            :  '${fromAddress.lat} - ${fromAddress.lng}',
+                        () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PlacePickerPage(
+                    fromAddress == null ? "" : fromAddress.name, (place, isFrom) {
+                    fromAddress = place;
+                    setState(() {});
+                    }, true)));
+                    }),
                     _textfeildInfo('Giá xe 4 chỗ', _controllerPrice4s),
                     _textfeildInfo('Giá xe 7 chỗ', _controllerPrice7s),
                     _textfeildInfo('Giá xe 16 chỗ', _controllerPrice16s),
@@ -82,11 +177,35 @@ class _UpdateRouteState extends State<UpdateRoute> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        
+
                         _buttonCanCel(context),
                         SizedBox(width: 24,),
-                        _buttonConfirm(onPressed: (){}),
-                        
+                        _buttonConfirm(onPressed: (){
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  elevation: 5,
+                                  title: Text('Cập nhật'),
+                                  content: Text('Bạn muốn cập nhật ??'),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('Hủy'),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () async {
+                                        upload(_imageUpload);
+                                      },
+                                      child: Text('Xác nhận'),
+                                    )
+                                  ],
+                                );
+                              });
+                        }),
+
                       ],
                     )
                   ],
@@ -97,10 +216,10 @@ class _UpdateRouteState extends State<UpdateRoute> {
         ));
   }
 
-  Widget _buildImagePick() {
+  Widget _buildImagePick(BuildContext context) {
     return Container(
       height: 200,
-      child: _image == null
+      child: _imageUpload == null
           ? Center(
               /*  child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -114,17 +233,19 @@ class _UpdateRouteState extends State<UpdateRoute> {
                       icon: Icons.dashboard, onPressed: getImageGallery),
                 ],
               ), */
-              child: ClipRect(
+              child: ClipRRect(
+
+                borderRadius: BorderRadius.circular(6),
                 child: CachedNetworkImage(
-                  imageUrl: widget.routes.image,
+                  imageUrl: ApiHttp.urlImageRoute +widget.routes.image,
                   fit: BoxFit.cover
                 ),
               ),
             )
           : ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(6),
               child: Image.file(
-                _image,
+                _imageUpload,
                 height: 200,
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
@@ -166,14 +287,6 @@ class _UpdateRouteState extends State<UpdateRoute> {
     );
   }
 
-  void _selectedPickUpPlace() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PlacePickerPage(
-                fromAddress == null ? "" : fromAddress.name, (place, isFrom) {
-              fromAddress = place;
-              setState(() {});
-            }, true)));
-  }
 }
 
 Widget _textRoute(String title, {Function onPressed}) {
@@ -290,40 +403,47 @@ Widget _line() {
 }
 
 Widget _buttonConfirm({Function onPressed}) {
-  return FlatButton(
-    onPressed: onPressed,
-    child: Text('Xác nhận', style: TextStyle(color: Colors.blue)),
+  return Container(
+    width: 120,
+    child: FlatButton(
+      color: Colors.blue,
+      onPressed: onPressed,
+      child: Text('Xác nhận', style: TextStyle(color: Colors.white)),
+    ),
   );
 }
 
 Widget _buttonCanCel(BuildContext context) {
-  return FlatButton(
-    onPressed: () {
-      /*showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              elevation: 5,
-              title: Text('Cập nhật'),
-              content: Text('Bạn muốn hủy cập nhật ??'),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Hủy'),
-                ),
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Xác nhận'),
-                )
-              ],
-            );
-          });*/
-      Navigator.pop(context);
-    },
-    child: Text('Hủy', style: TextStyle(color: Colors.blue)),
+  return Container(width: 120,
+    child: FlatButton(
+      color: Colors.red,
+      onPressed: () {
+        /*showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                elevation: 5,
+                title: Text('Cập nhật'),
+                content: Text('Bạn muốn hủy cập nhật ??'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Hủy'),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Xác nhận'),
+                  )
+                ],
+              );
+            });*/
+        Navigator.pop(context);
+      },
+      child: Text('Hủy', style: TextStyle(color: Colors.white)),
+    ),
   );
 }

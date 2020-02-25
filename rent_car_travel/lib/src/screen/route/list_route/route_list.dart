@@ -7,6 +7,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:rent_car_travel/src/models/route.dart';
+import 'package:rent_car_travel/src/screen/route/detail_route/detail_home_page.dart';
 
 class RouteList extends StatefulWidget {
   @override
@@ -56,54 +57,66 @@ class _RouteListState extends State<RouteList> {
 
   Widget _itemRouteList(AsyncSnapshot snapshot, int index) {
     var data = snapshot.data[index];
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4.0,
-            offset: Offset(0, 1),
-            color: Colors.grey,
-            spreadRadius: 1.0,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(radius),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: _imageRoute(
-              image: NetworkImage(data.image),
-              chilld: Stack(
-                children: <Widget>[
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: _ratingRoute(data.rating),
-                  ),
-                ],
+    return InkWell(
+      onTap: (){
+           Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (builder) => DetailRouteHome(
+                                  route: data,
+                                ),
+                              ),
+                            );
+      },
+          child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 4.0,
+              offset: Offset(0, 1),
+              color: Colors.grey,
+              spreadRadius: 1.0,
+            ),
+          ],
+          borderRadius: BorderRadius.circular(radius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: _imageRoute(
+                image: NetworkImage(ApiHttp.urlImageRoute + data.image),
+                chilld: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: _ratingRoute(data.rating),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _textNameRoute(data.nameRoute),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    child: _textDesriptionRout(data.description),
-                  ),
-                ],
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _textNameRoute(data.nameRoute),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      child: _textDesriptionRout(data.description),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -112,7 +112,7 @@ class _SelectDatePageState extends State<SelectDatePage> {
             )));
           },
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -136,7 +136,7 @@ class _SelectDatePageState extends State<SelectDatePage> {
                 _selectedDate(context);
               },
               valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
-              timePicker: 'Time to go',
+              timePicker: 'Thời gian đi',
             ),
           ),
           Container(
@@ -151,7 +151,7 @@ class _SelectDatePageState extends State<SelectDatePage> {
                 _selectedDateReturn(context);
               },
               valueStyle: TextStyle(color: Color(0xFF737373), fontSize: 14),
-              timePicker: 'Time return',
+              timePicker: 'Thời gian về',
             ),
           ),
           Container(

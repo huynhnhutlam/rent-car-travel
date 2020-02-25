@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rent_car_travel/src/constants/api_http.dart';
 import 'package:rent_car_travel/src/models/route.dart';
 import 'package:rent_car_travel/src/screen/route/detail_route/detail_route.dart';
 import 'package:rent_car_travel/src/screen/widget/row_rating.dart';
@@ -75,7 +76,7 @@ class _DetailRouteHomeState extends State<DetailRouteHome>
               height: 200,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(widget.route.image),
+                      image: NetworkImage(ApiHttp.urlImageRoute +widget.route.image),
                       fit: BoxFit.cover))),
           Positioned(
             child: Row(
